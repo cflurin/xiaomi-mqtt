@@ -1,0 +1,13 @@
+{
+  "xiaomi": {
+    "serverPort": 9898,
+    "multicastAddress": "224.0.0.50",
+    "multicastPort": 4321
+  },
+  "mqtt": {
+    "url": "mqtt://127.0.0.1",
+    "port": "1883",
+    "username": "foo",
+    "password": "bar"
+  }
+}
