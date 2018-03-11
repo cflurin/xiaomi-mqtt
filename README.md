@@ -1,12 +1,12 @@
 # xiaomi-mqtt
 
-A Bridge between Xiaomi Mi Smart Home Gateway and Mqtt broker.
+A Bridge between the Xiaomi Mi Smart Home Gateway and the Mqtt broker.
 
-**Workiin progress**
+# Work in progress ...
 
 ### Installation
 
-Install xiaomi-mqt in your working foldert:
+Install xiaomi-mqt in your working folder:
 ```sh
 sudo npm install xiaomi-mqtt
 ```
