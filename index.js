@@ -4,11 +4,11 @@ var dgram = require('dgram');
 var Mqtt = require('./lib/mqtt.js').Mqtt;
 var Utils = require('./lib/utils.js').Utils;
 
-const node_name = "xiaomi-mqtt";
-const topic_from = "xiaomi/from/";
+const package_name = "xiaomi-mqtt";
 
-var sidToAddress, sidToPort;
-var address, port;
+var sidAddress = {}
+var sidPort = {};
+//var address, port;
 var payload = {};
       
 var config = Utils.loadConfig(__dirname, "config.json");
@@ -19,12 +19,12 @@ var multicastPort =  config.xiaomi.multicastPort || 4321;
 
 var package_version = Utils.read_packageVersion();
 
-Utils.log("Start xiaomi-mqtt, version " + package_version);
+Utils.log("Start "+package_name+", version "+package_version);
 //Utils.log("config " + JSON.stringify(config, null, 2));
 
 var params = {
   "config": config,
-  "node_name": node_name,
+  "package_name": package_name,
   "get_id_list": get_id_list,
   "read": read
 }
@@ -32,16 +32,18 @@ var params = {
 var mqtt = new Mqtt(params);
 mqtt.connect();
 
-const serverSocket = dgram.createSocket('udp4');
-serverSocket.bind(serverPort);
+const server = dgram.createSocket('udp4');
+server.bind(serverPort);
+
 sendWhois();
 
-serverSocket.on('listening', function() {
-  Utils.log("Start a UDP server, listening on port "+serverPort);
-  serverSocket.addMembership(multicastAddress);
+server.on('listening', function() {
+  var address = server.address();
+  Utils.log("Start a UDP server, listening on port "+address.port);
+  server.addMembership(multicastAddress);
 })
 
-serverSocket.on('message', function(msg, rinfo) {
+server.on('message', function(msg, rinfo) {
   var json;
   
   try {
@@ -53,16 +55,25 @@ serverSocket.on('message', function(msg, rinfo) {
 
   switch (json.cmd) {
     case "iam":
-      address = json.ip;
-      port = json.port;
-      get_id_list();
+      //Utils.log("msg "+JSON.stringify(json));
+      var sid = json.sid;
+      sidAddress[sid] = json.ip;
+      sidPort[sid] = json.port;
+      get_id_list(sid);
       break;
     case "get_id_list_ack":
-      sidToAddress = rinfo.address;
-      sidToPort = rinfo.port;
+      var data = JSON.parse(json.data);
+      var sid;
+      for(var index in data) {
+        sid = data[index];
+        sidAddress[sid] = rinfo.address;
+        sidPort[sid] = rinfo.port;
+      }
+      //Utils.log("debug "+ JSON.stringify(sidAddress)+ " "+JSON.stringify(sidPort))
+      Utils.log("Gateway sid "+json.sid+" Address "+sidAddress[sid]+", Port "+sidPort[sid]);
       payload = {"cmd":json.cmd, "sid":json.sid, "data":JSON.parse(json.data)};
       Utils.log(JSON.stringify(payload, null, 2));
-      mqtt.publish(topic_from, payload);
+      mqtt.publish(payload);
       break;
     case "read_ack":
     case "report":
@@ -73,18 +84,18 @@ serverSocket.on('message', function(msg, rinfo) {
           var humidity = data.humidity ? Math.round(data.humidity / 10.0) / 10: null;
           payload = {"cmd":json.cmd ,"model":json.model, "sid":json.sid, "short_id":json.short_id, "data": {"temperature":temperature, "humidity":humidity}};
           Utils.log(JSON.stringify(payload));
-          mqtt.publish(topic_from, payload);      
+          mqtt.publish(payload);      
           break;
         case "switch":
         case "sensor_motion.aq2":
           payload = {"cmd":json.cmd ,"model":json.model, "sid":json.sid, "short_id":json.short_id, "data": data};
           Utils.log(JSON.stringify(payload));
-          mqtt.publish(topic_from, payload); 
+          mqtt.publish(payload); 
           break;
         case "gateway":
           payload = {"cmd":json.cmd ,"model":json.model, "sid":json.sid, "short_id":json.short_id, "data": data};
           Utils.log(JSON.stringify(payload));
-          mqtt.publish(topic_from, payload);
+          mqtt.publish(payload);
           break;       
         default:
           payload = {"cmd":json.cmd ,"model":json.model, "sid":json.sid, "short_id":json.short_id, "data": data};
@@ -104,26 +115,27 @@ serverSocket.on('message', function(msg, rinfo) {
 });
 
 // https://nodejs.org/api/errors.html
-serverSocket.on('error', function(err) {
+server.on('error', function(err) {
   Utils.log("error, msg - "+err.message+", stack - "+err.stack);
+  server.close();
 });
 
 function sendWhois() {
   var msg = '{"cmd": "whois"}';
   Utils.log("Send "+msg+" to a multicast address "+multicastAddress+":"+multicastPort);
-  serverSocket.send(msg, 0, msg.length, multicastPort, multicastAddress);
+  server.send(msg, 0, msg.length, multicastPort, multicastAddress);
 }
 
-function get_id_list() {
+function get_id_list(sid) {
   var msg = '{"cmd":"get_id_list"}';
-  Utils.log("Send "+msg+" to "+address+":"+port);
-  serverSocket.send(msg, 0, msg.length, port, address);
+  Utils.log("Send "+msg+" to "+sidAddress[sid]+":"+sidPort[sid]);
+  server.send(msg, 0, msg.length, sidPort[sid], sidAddress[sid]);
 }
 
 function read(sid) {
   var msg = '{"cmd":"read", "sid":"' + sid + '"}';
-  //Utils.log("Send "+msg+" to "+sidToAddress+":"+sidToPort);
-  serverSocket.send(msg, 0, msg.length, sidToPort, sidToAddress);
+  //Utils.log("Send "+msg+" to "+sidAddress[sid]+":"+sidPort[sid]);
+  server.send(msg, 0, msg.length, sidPort[sid], sidAddress[sid]);
 }
 
 
