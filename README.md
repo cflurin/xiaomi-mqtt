@@ -50,7 +50,7 @@ Replace `127.0.0.1` with the ip-address of your mqtt broker.
 
 ### Usage
 
-Got to your working folder.
+Go to the `xiaomi-mqtt` folder.
 
 Use `node index.js` to run xiaomi-mqtt.
 
