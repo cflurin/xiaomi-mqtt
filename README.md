@@ -66,7 +66,7 @@ At sart or stop xiaomi-mqtt sends status cmds.
 
 ```sh
 topic: xiaomi/from
-payload: {"cmd":"status","msg":"Xiaomi-mqtt started."}
+payload: {"cmd":"status","msg":"xiaomi-mqtt started."}
 ```
 and
 
@@ -83,7 +83,7 @@ payload: {
 
 ```sh
 topic: xiaomi/from
-payload: {"cmd":"status","msg":"Xiaomi-mqtt stopped."}
+payload: {"cmd":"status","msg":"xiaomi-mqtt stopped."}
 ```
 
 ### reporting
@@ -144,6 +144,6 @@ payload:
 ```
 
 #
-# Node-red example
+# Node-RED example
 
-todo ...
+![node-red-ex1](https://user-images.githubusercontent.com/5056710/37292838-1612a042-2612-11e8-8473-939496dc0022.jpeg)

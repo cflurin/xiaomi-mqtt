@@ -109,7 +109,7 @@ server.on('message', function(buffer, rinfo) {
       }
       break;
     default:
-      Utils.log("unknown cmd:  "+msg.length+" from client "+rinfo.address+":"+rinfo.port);
+      Utils.log("unknown cmd: "+msg.length+" from client "+rinfo.address+":"+rinfo.port);
       Utils.log(msg);
   }
 });
