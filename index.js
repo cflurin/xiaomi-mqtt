@@ -99,7 +99,7 @@ server.on('message', function(buffer, rinfo) {
           break;       
         default:
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
-          Utils.log("unkown model: "+JSON.stringify(payload));
+          Utils.log("unknown model: "+JSON.stringify(payload));
       }
       break;
     case "heartbeat":
@@ -109,7 +109,7 @@ server.on('message', function(buffer, rinfo) {
       }
       break;
     default:
-      Utils.log("unknow cmd:  "+msg.length+" from client "+rinfo.address+":"+rinfo.port);
+      Utils.log("unknown cmd:  "+msg.length+" from client "+rinfo.address+":"+rinfo.port);
       Utils.log(msg);
   }
 });
