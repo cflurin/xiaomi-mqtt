@@ -53,7 +53,7 @@ The data (payload) is sent/received in a JSON format using following topics:
 
 At sart or stop xiomi-mqtt sends status cmds.
 
-### start
+### start
 
 ```sh
 topic: xiaomi/from
@@ -70,14 +70,14 @@ payload: {
 }
 ```
 
-### stop
+### stop
 
 ```sh
 topic: xiaomi/from
 payload: {"cmd":"status","msg":"Xiaomi-mqtt stopped."}
 ```
 
-### reporting
+### reporting
 
 Xiomi-mqtt reports periodically gateway report cmds.
 
@@ -93,7 +93,7 @@ payload:
 }
 ```
 
-### read devices
+### read devices
 
 ```sh
 topic: xiaomi/to/read
@@ -114,13 +114,13 @@ payload:
 }
 ```
 
-### get_id_list:
+### get_id_list:
 
 ```sh
 topic: xiaomi/to/get_id_list
 payload: {"sid":"286c07f096fb"}
 ```
-**Note** sid = gateway sid.
+**Note:** sid = gateway sid.
 
 response
 
