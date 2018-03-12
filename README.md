@@ -14,9 +14,9 @@ Devices (models) implemented so far:
 
 ### Installation
 
-Install xiaomi-mqtt in your working (e.g. `xiaomi`) folder:
+Install xiaomi-mqtt in your working folder (e.g. `xiaomi`).
 
-**Note:** Installation from `npm`` will be provided as soon as the the first release version is published.
+**Note:** Installation from `npm` will be provided as soon as the the first release version is published.
 
 ```sh
 npm install cflurin/xiaomi-mqtt
@@ -24,7 +24,7 @@ npm install cflurin/xiaomi-mqtt
 
 ### Configuration
 
-Edit the `config.json` in your working folder to fit your requirements:
+Edit the `config.json` in the `xiaomi-mqtt` folder to fit your requirements:
 
 ```sh
 cd node_modules/xiaomi-mqtt
