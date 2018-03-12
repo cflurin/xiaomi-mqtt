@@ -38,6 +38,7 @@ Replace `127.0.0.1` with the ip-address of your mqtt broker.
 Got to your working folder.
 
 Use `node index.js` to run xiaomi-mqtt.
+
 Use `ctrl c` to stop xiaomi-mqtt.
 
 #
@@ -51,7 +52,7 @@ The data (payload) is sent/received in a JSON format using following topics:
 
 ## Howto examples
 
-At sart or stop xiomi-mqtt sends status cmds.
+At sart or stop xiaomi-mqtt sends status cmds.
 
 ### start
 
@@ -79,7 +80,7 @@ payload: {"cmd":"status","msg":"Xiaomi-mqtt stopped."}
 
 ### reporting
 
-Xiomi-mqtt reports periodically gateway report cmds.
+Xiaomi-mqtt sends periodically gateway reports.
 
 ```sh
 topic: xiaomi/from
