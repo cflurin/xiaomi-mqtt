@@ -43,26 +43,26 @@ server.on('listening', function() {
   server.addMembership(multicastAddress);
 })
 
-server.on('message', function(msg, rinfo) {
-  var json;
+server.on('message', function(buffer, rinfo) {
+  var msg;
   
   try {
-    json = JSON.parse(msg);
+    msg = JSON.parse(buffer);
   } catch (e) {
-    Utils.log("invalid message: "+msg);
+    Utils.log("invalid message: "+buffer);
     return;
   }
 
-  switch (json.cmd) {
+  switch (msg.cmd) {
     case "iam":
       //Utils.log("msg "+JSON.stringify(json));
-      var sid = json.sid;
-      sidAddress[sid] = json.ip;
-      sidPort[sid] = json.port;
+      var sid = msg.sid;
+      sidAddress[sid] = msg.ip;
+      sidPort[sid] = msg.port;
       get_id_list(sid);
       break;
     case "get_id_list_ack":
-      var data = JSON.parse(json.data);
+      var data = JSON.parse(msg.data);
       var sid;
       for(var index in data) {
         sid = data[index];
@@ -70,41 +70,41 @@ server.on('message', function(msg, rinfo) {
         sidPort[sid] = rinfo.port;
       }
       //Utils.log("debug "+ JSON.stringify(sidAddress)+ " "+JSON.stringify(sidPort))
-      Utils.log("Gateway sid "+json.sid+" Address "+sidAddress[sid]+", Port "+sidPort[sid]);
-      payload = {"cmd":json.cmd, "sid":json.sid, "data":JSON.parse(json.data)};
-      Utils.log(JSON.stringify(payload, null, 2));
+      Utils.log("Gateway sid "+msg.sid+" Address "+sidAddress[sid]+", Port "+sidPort[sid]);
+      payload = {"cmd":msg.cmd, "sid":msg.sid, "data":JSON.parse(msg.data)};
+      Utils.log(JSON.stringify(payload));
       mqtt.publish(payload);
       break;
     case "read_ack":
     case "report":
-      var data = JSON.parse(json.data);
-      switch (json.model) {
+      var data = JSON.parse(msg.data);
+      switch (msg.model) {
         case "sensor_ht":
           var temperature = data.temperature ? Math.round(data.temperature / 10.0) / 10 : null;
           var humidity = data.humidity ? Math.round(data.humidity / 10.0) / 10: null;
-          payload = {"cmd":json.cmd ,"model":json.model, "sid":json.sid, "short_id":json.short_id, "data": {"temperature":temperature, "humidity":humidity}};
+          payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": {"temperature":temperature, "humidity":humidity}};
           Utils.log(JSON.stringify(payload));
           mqtt.publish(payload);      
           break;
         case "switch":
         case "sensor_motion.aq2":
-          payload = {"cmd":json.cmd ,"model":json.model, "sid":json.sid, "short_id":json.short_id, "data": data};
+          payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           Utils.log(JSON.stringify(payload));
           mqtt.publish(payload); 
           break;
         case "gateway":
-          payload = {"cmd":json.cmd ,"model":json.model, "sid":json.sid, "short_id":json.short_id, "data": data};
+          payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           Utils.log(JSON.stringify(payload));
           mqtt.publish(payload);
           break;       
         default:
-          payload = {"cmd":json.cmd ,"model":json.model, "sid":json.sid, "short_id":json.short_id, "data": data};
+          payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           Utils.log("unkown model: "+JSON.stringify(payload));
       }
       break;
     case "heartbeat":
-      if (json.model !== 'gateway') {
-        payload = {"cmd":json.cmd ,"model":json.model, "sid":json.sid, "short_id":json.short_id, "data": data};
+      if (msg.model !== 'gateway') {
+        payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
         Utils.log(JSON.stringify(payload));
       }
       break;
