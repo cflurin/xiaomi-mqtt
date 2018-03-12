@@ -6,7 +6,7 @@ A Bridge between the Xiaomi Mi Smart Home Gateway and the Mqtt broker.
 
 ### Installation
 
-Install xiaomi-mqt in your working folder:
+Install xiaomi-mqtt in your working folder:
 ```sh
 sudo npm install xiaomi-mqtt
 ```
@@ -80,7 +80,7 @@ payload: {"cmd":"status","msg":"Xiaomi-mqtt stopped."}
 
 ### reporting
 
-Xiaomi-mqtt sends periodically gateway reports.
+Xiaomi-mqtt sends periodically device reports.
 
 ```sh
 topic: xiaomi/from
