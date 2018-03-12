@@ -2,7 +2,7 @@
 
 A Bridge between the Xiaomi Mi Smart Home Gateway and the Mqtt broker.
 
-Xiaomi-mqtt exchanges data between the xiaomi gateway and the mqtt-broker at a low-level principally based on the device `sid` (Security Identifier?). Logic and Visualization are to be implemented at a higher level. [Node-RED](http://nodered.org/) is the perfect tool to use with xiaomi-mqtt.
+Xiaomi-mqtt exchanges data between the xiaomi gateway and the mqtt-broker at a low-level principally based on the device `sid` (Security Identifier?). The automation and dashboard tasks are implemented at a higher level. [Node-RED](http://nodered.org/) is the perfect tool to use with xiaomi-mqtt.
 
 # Work in progress ...
 
@@ -60,7 +60,7 @@ The data (payload) is sent/received in a JSON format using following topics:
 
 ## Howto examples
 
-At sart or stop xiaomi-mqtt sends status cmds.
+At sart or stop xiaomi-mqtt sends status messages.
 
 ### start
 
