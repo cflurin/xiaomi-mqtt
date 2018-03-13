@@ -98,6 +98,8 @@ payload: {"cmd":"status","msg":"xiaomi-mqtt stopped."}
 
 Xiaomi-mqtt sends periodically device reports.
 
+**sensor_ht**
+
 ```sh
 topic: xiaomi/from
 payload:
@@ -121,6 +123,7 @@ payload:
   "data":{"voltage":3005,"temperature":null,"humidity":51.7}
 }
 ```
+**switch**
 
 ```sh
 topic: xiaomi/from
@@ -135,6 +138,8 @@ payload:
 ```
 
 ### read devices
+
+**gateway**
 
 ```sh
 topic: xiaomi/to/read
@@ -155,6 +160,8 @@ payload:
 }
 ```
 
+**sensor_ht**
+
 ```sh
 topic: xiaomi/to/read
 payload: {"sid":"158d00017118ac"}
@@ -173,6 +180,8 @@ payload:
   "data":{"voltage":2985,"temperature":19,"humidity":46.3}
 }
 ```
+
+**switch**
 
 ```sh
 topic: xiaomi/to/read
