@@ -145,7 +145,8 @@ response
 ```sh
 topic: xiaomi/from
 payload:
-  {"cmd":"read_ack",
+{
+  "cmd":"read_ack",
   "model":"gateway",
   "sid":"286c07f096fb",
   "short_id":0,
