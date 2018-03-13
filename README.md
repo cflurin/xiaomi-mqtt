@@ -79,7 +79,8 @@ and
 
 ```sh
 topic: xiaomi/from
-payload: {
+payload: 
+{
   "cmd":"get_id_list_ack",
   "sid":"286c07f096fb",
   "data":["158d00017118ac","158d0001a2eb66","158d0001f35b90","158d0001e52516"]
