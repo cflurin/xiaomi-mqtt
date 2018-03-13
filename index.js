@@ -82,24 +82,21 @@ server.on('message', function(buffer, rinfo) {
         case "sensor_ht":
           var temperature = data.temperature ? Math.round(data.temperature / 10.0) / 10 : null;
           var humidity = data.humidity ? Math.round(data.humidity / 10.0) / 10: null;
-          payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": {"temperature":temperature, "humidity":humidity}};
+          payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": {"voltage": data.voltage, "temperature":temperature, "humidity":humidity}};
           Utils.log(JSON.stringify(payload));
           mqtt.publish(payload);      
           break;
+        case "gateway":
         case "switch":
         case "sensor_motion.aq2":
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           Utils.log(JSON.stringify(payload));
           mqtt.publish(payload); 
-          break;
-        case "gateway":
-          payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
-          Utils.log(JSON.stringify(payload));
-          mqtt.publish(payload);
           break;       
         default:
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           Utils.log("unknown model: "+JSON.stringify(payload));
+          mqtt.publish(payload); 
       }
       break;
     case "heartbeat":

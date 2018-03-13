@@ -101,15 +101,57 @@ Xiaomi-mqtt sends periodically device reports.
 topic: xiaomi/from
 payload:
 {
-"cmd":"report",
+  "cmd":"report",
   "model":"sensor_ht",
   "sid":"158d0001a2eb66",
   "short_id":30124,
-  "data":{"temperature":null,"humidity":48.9}
+  "data":{"voltage":3005,"temperature":16.7,"humidity":null}
+}
+```
+
+```sh
+topic: xiaomi/from
+payload:
+{
+  "cmd":"report",
+  "model":"sensor_ht",
+  "sid":"158d0001a2eb66",
+  "short_id":30124,
+  "data":{"voltage":3005,"temperature":null,"humidity":51.7}
+}
+```
+
+```sh
+topic: xiaomi/from
+payload:
+{
+  "cmd":"report",
+  "model":"switch",
+  "sid":"158d0001f35b90",
+  "short_id":46517,
+  "data":{"status":"click"}
 }
 ```
 
 ### read devices
+
+```sh
+topic: xiaomi/to/read
+payload: {"sid":"286c07f096fb"}
+```
+
+response
+
+```sh
+topic: xiaomi/from
+payload:
+  {"cmd":"read_ack",
+  "model":"gateway",
+  "sid":"286c07f096fb",
+  "short_id":0,
+  "data":{"rgb":0,"illumination":1292,"proto_version":"1.0.9"}
+}
+```
 
 ```sh
 topic: xiaomi/to/read
@@ -126,7 +168,26 @@ payload:
   "model":"sensor_ht",
   "sid":"158d00017118ac",
   "short_id":48290,
-  "data":{"temperature":19,"humidity":46.3}
+  "data":{"voltage":2985,"temperature":19,"humidity":46.3}
+}
+```
+
+```sh
+topic: xiaomi/to/read
+payload: {"sid":"158d0001f35b90"}
+```
+
+response
+
+```sh
+topic: xiaomi/from
+payload:
+{
+  "cmd":"read_ack",
+  "model":"switch",
+  "sid":"158d0001f35b90",
+  "short_id":46517,
+  "data":{"voltage":3112}
 }
 ```
 
