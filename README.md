@@ -67,7 +67,8 @@ The data (payload) is sent/received in a JSON format using following topics:
 
 ## Howto examples
 
-At sart or stop xiaomi-mqtt sends messages.
+
+At start and stop xiaomi-mqtt sends following messages.
 
 ### start
 
@@ -96,7 +97,7 @@ payload: {"cmd":"xm","msg":"xiaomi-mqtt stopped."}
 
 ### reporting
 
-Xiaomi-mqtt sends periodically device reports.
+Xiaomi-mqtt sends periodically or on events device reports.
 
 **sensor_ht**
 
