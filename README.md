@@ -67,13 +67,13 @@ The data (payload) is sent/received in a JSON format using following topics:
 
 ## Howto examples
 
-At sart or stop xiaomi-mqtt sends status messages.
+At sart or stop xiaomi-mqtt sends messages.
 
 ### start
 
 ```sh
 topic: xiaomi/from
-payload: {"cmd":"status","msg":"xiaomi-mqtt started."}
+payload: {"cmd":"xm","msg":"xiaomi-mqtt started."}
 ```
 and
 
@@ -91,7 +91,7 @@ payload:
 
 ```sh
 topic: xiaomi/from
-payload: {"cmd":"status","msg":"xiaomi-mqtt stopped."}
+payload: {"cmd":"xm","msg":"xiaomi-mqtt stopped."}
 ```
 
 ### reporting

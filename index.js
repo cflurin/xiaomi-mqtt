@@ -135,7 +135,7 @@ function read(sid) {
     //Utils.log("Send "+msg+" to "+sidAddress[sid]+":"+sidPort[sid]);
     server.send(msg, 0, msg.length, sidPort[sid], sidAddress[sid]);
   } else {
-    payload = {"cmd":"status","msg":"sid >"+sid+"< unknown."};
+    payload = {"cmd":"xm","msg":"sid >"+sid+"< unknown."};
     Utils.log(JSON.stringify(payload));
     mqtt.publish(payload);
   }
