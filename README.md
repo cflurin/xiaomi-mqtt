@@ -12,23 +12,29 @@ Devices (models) implemented so far:
 * sensor_motion.aq2
 * switch
 
-### Installation
+### Installation from GitHub
 
-Install xiaomi-mqtt in your working folder (e.g. `xiaomi`).
-
-**Note:** Installation from `npm` will be provided as soon as the the first release version is published.
+Clone the source repository directly from GitHub:
 
 ```sh
-npm install cflurin/xiaomi-mqtt
+git clone https://github.com/cflurin/xiaomi-mqtt.git
+```
+
+Install :
+
+```sh
+cd xiaomi-mqtt
+npm install
+```
+Change `index.js` permission:
+
+```sh
+sudo chmod 755 index.js
 ```
 
 ### Configuration
 
 Edit the `config.json` in the `xiaomi-mqtt` folder to fit your requirements:
-
-```sh
-cd node_modules/xiaomi-mqtt
-```
 
 ```sh
 {
@@ -46,13 +52,13 @@ cd node_modules/xiaomi-mqtt
 }
 ```
 
-Replace `127.0.0.1` with the ip-address of your mqtt broker.
+Replace `127.0.0.1` with the address of your mqtt broker.
 
 ### Usage
 
-Go to the `xiaomi-mqtt` folder.
+In the `xiaomi-mqtt` folder.
 
-Use `node index.js` to run xiaomi-mqtt.
+Use `./index.js` to run xiaomi-mqtt.
 
 Use `ctrl c` to stop xiaomi-mqtt.
 
