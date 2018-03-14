@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 'use strict';
 
 var dgram = require('dgram');
@@ -8,7 +9,6 @@ const package_name = "xiaomi-mqtt";
 
 var sidAddress = {}
 var sidPort = {};
-//var address, port;
 var payload = {};
       
 var config = Utils.loadConfig(__dirname, "config.json");
