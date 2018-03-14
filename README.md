@@ -38,7 +38,7 @@ Copy the `config.json` file to the `.xiaomi-mqtt` folder inside of your home fol
 
 ```sh
 mkdir ~/.xiaomi-mqtt
-cp config.json ~/.xiaomi-mqtt
+cp config.json ~/.xiaomi-mqtt/
 ```
 On macOS and Linux, the full path for your config.json would be `~/.xiaomi-mqtt/config.json`.
 

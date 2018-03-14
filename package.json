@@ -7,8 +7,8 @@
     "start": "node index.js"
   },
   "bin": {
-    "xm": "./index.js",
-    "xiaomi-mqtt": "./index.js"
+    "xm": "index.js",
+    "xiaomi-mqtt": "index.js"
   },
   "repository": {
     "type": "git",
