@@ -11,7 +11,7 @@ var sidAddress = {}
 var sidPort = {};
 var payload = {};
       
-var config = Utils.loadConfig(__dirname, "config.json");
+var config = Utils.loadConfig("config.json");
 
 var serverPort = config.xiaomi.serverPort || 9898;
 var multicastAddress = config.xiaomi.multicastAddress || '224.0.0.50';

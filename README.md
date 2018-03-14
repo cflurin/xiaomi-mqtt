@@ -34,7 +34,15 @@ sudo chmod 755 index.js
 
 ### Configuration
 
-Edit the `config.json` in the `xiaomi-mqtt` folder to fit your requirements:
+Copy the `config.json` file to the `.xiaomi-mqtt` folder inside of your home folder.
+
+```sh
+mkdir ~/.xiaomi-mqtt
+cp config.json ~/.xiaomi-mqtt
+```
+On macOS and Linux, the full path for your config.json would be `~/.xiaomi-mqtt/config.json`.
+
+Edit `~/xiaomi-mqtt/config.json` to fit your requirements:
 
 ```sh
 {
