@@ -12,15 +12,22 @@ Devices (models) implemented so far:
 * sensor_motion.aq2
 * switch
 
+
+### Installation
+
+```sh
+sudo npm install -g xiaomi-mqtt
+```
+
 ### Installation from GitHub
 
-Clone the source repository directly from GitHub:
+Clone the source repository directly from GitHub to a local folder:
 
 ```sh
 git clone https://github.com/cflurin/xiaomi-mqtt.git
 ```
 
-Install :
+Install local:
 
 ```sh
 cd xiaomi-mqtt
