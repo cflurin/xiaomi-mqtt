@@ -71,14 +71,14 @@ Replace `127.0.0.1` with the address of your mqtt broker.
 
 ### Usage (global installation)
 
-Use `xiaomi-mqtt` or `xm` to run xiaomi-mqtt.
+Use `xiaomi-mqtt` or `xm` to run xiaomi-mqtt.<br>
 Use `ctrl c` to stop xiaomi-mqtt.
 
 ### Usage (local installation)
 
 In the `xiaomi-mqtt` folder.
 
-Use `./index.js` to run xiaomi-mqtt.
+Use `./index.js` to run xiaomi-mqtt.<br>
 Use `ctrl c` to stop xiaomi-mqtt.
 
 #
