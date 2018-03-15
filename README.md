@@ -69,12 +69,16 @@ Edit `~/xiaomi-mqtt/config.json` to fit your requirements:
 
 Replace `127.0.0.1` with the address of your mqtt broker.
 
-### Usage
+### Usage (global installation)
+
+Use `xiaomi-mqtt` or `xm` to run xiaomi-mqtt.
+Use `ctrl c` to stop xiaomi-mqtt.
+
+### Usage (local installation)
 
 In the `xiaomi-mqtt` folder.
 
 Use `./index.js` to run xiaomi-mqtt.
-
 Use `ctrl c` to stop xiaomi-mqtt.
 
 #
