@@ -2,7 +2,7 @@
 
 A Bridge between the Xiaomi Mi Smart Home Gateway and the Mqtt broker.
 
-Xiaomi-mqtt exchanges data between the xiaomi gateway and the mqtt-broker at a low-level principally based on the device `sid` (Security Identifier?). The automation and dashboard tasks are implemented at a higher level. [Node-RED](http://nodered.org/) is the perfect tool to use with xiaomi-mqtt.
+Xiaomi-mqtt exchanges data between the xiaomi gateway and the mqtt-broker at a low-level, principally based on the device `sid` (Security Identifier?). The automation and dashboard tasks are implemented at a higher level. [Node-RED](http://nodered.org/) is the perfect tool to use for this purpose.
 
 # Work in progress ...
 
@@ -27,16 +27,11 @@ Clone the source repository directly from GitHub to a local folder:
 git clone https://github.com/cflurin/xiaomi-mqtt.git
 ```
 
-Install local:
+Local Installation:
 
 ```sh
 cd xiaomi-mqtt
 npm install
-```
-Change `index.js` permission:
-
-```sh
-sudo chmod 755 index.js
 ```
 
 ### Configuration
@@ -78,7 +73,7 @@ Use `ctrl c` to stop xiaomi-mqtt.
 
 In the `xiaomi-mqtt` folder.
 
-Use `./index.js` to run xiaomi-mqtt.<br>
+Use `npm start` to run xiaomi-mqtt.<br>
 Use `ctrl c` to stop xiaomi-mqtt.
 
 #
@@ -87,8 +82,9 @@ Use `ctrl c` to stop xiaomi-mqtt.
 The data (payload) is sent/received in a JSON format using following topics:
 
 * xiaomi/from
-* xiaomi/to/get_id_list
 * xiaomi/to/read
+* xiaomi/to/write
+* xiaomi/to/get_id_list
 
 ## Howto examples
 
@@ -120,9 +116,46 @@ topic: xiaomi/from
 payload: {"cmd":"xm","msg":"xiaomi-mqtt stopped."}
 ```
 
+### heartbeat
+
+**gateway**
+
+```sh
+topic: xiaomi/from
+payload:
+{
+  "cmd": "heartbeat",
+  "model": "gateway",
+  "sid": "286c07f096fb",
+  "short_id": "0",
+  "token": "v4GeGCO9TBpTUlVy",
+  "data": {
+    "ip": "192.168.0.38"
+  }
+}
+```
+
 ### reporting
 
 Xiaomi-mqtt sends periodically or on events device reports.
+
+**gateway**
+
+```sh
+topic: xiaomi/from
+payload:
+
+{
+  "cmd": "report",
+  "model": "gateway",
+  "sid": "286c07f096fb",
+  "short_id": 0,
+  "data": {
+    "rgb": 0,
+    "illumination": 1292
+  }
+}
+```
 
 **sensor_ht**
 
@@ -163,7 +196,7 @@ payload:
 }
 ```
 
-### read devices
+### read
 
 **gateway**
 
@@ -225,6 +258,34 @@ payload:
   "sid":"158d0001f35b90",
   "short_id":46517,
   "data":{"voltage":3112}
+}
+```
+### write
+
+```sh
+topic: xiaomi/to/write
+payload: 
+{
+  "cmd": "write",
+  "model": "gateway",
+  "sid": "286c07f096fb",
+  "data": {
+      "rgb": "1000FF00"
+  }
+}
+```
+
+response
+
+```sh
+topic: xiaomi/from
+payload:
+{
+  "cmd":"write_ack",
+  "model":"gateway",
+  "sid":"286c07f096fb",
+  "short_id":0,
+  "data":{"rgb":268500736,"illumination":1292,"proto_version":"1.0.9"}
 }
 ```
 

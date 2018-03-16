@@ -4,11 +4,13 @@
 var dgram = require('dgram');
 var Mqtt = require('./lib/mqtt.js').Mqtt;
 var Utils = require('./lib/utils.js').Utils;
+const crypto = require('crypto');
 
 const package_name = "xiaomi-mqtt";
 
 var sidAddress = {}
 var sidPort = {};
+var token = {};
 var payload = {};
       
 var config = Utils.loadConfig("config.json");
@@ -16,6 +18,9 @@ var config = Utils.loadConfig("config.json");
 var serverPort = config.xiaomi.serverPort || 9898;
 var multicastAddress = config.xiaomi.multicastAddress || '224.0.0.50';
 var multicastPort =  config.xiaomi.multicastPort || 4321;
+var password = config.xiaomi.password || "";
+
+const IV = Buffer.from([0x17, 0x99, 0x6d, 0x09, 0x3d, 0x28, 0xdd, 0xb3, 0xba, 0x69, 0x5a, 0x2e, 0x6f, 0x58, 0x56, 0x2e])
 
 var package_version = Utils.read_packageVersion();
 
@@ -26,7 +31,8 @@ var params = {
   "config": config,
   "package_name": package_name,
   "get_id_list": get_id_list,
-  "read": read
+  "read": read,
+  "write": write
 }
 
 var mqtt = new Mqtt(params);
@@ -48,6 +54,7 @@ server.on('message', function(buffer, rinfo) {
   
   try {
     msg = JSON.parse(buffer);
+    //Utils.log("msg "+JSON.stringify(msg));
   } catch (e) {
     Utils.log("invalid message: "+buffer);
     return;
@@ -55,7 +62,7 @@ server.on('message', function(buffer, rinfo) {
 
   switch (msg.cmd) {
     case "iam":
-      //Utils.log("msg "+JSON.stringify(json));
+      //Utils.log("msg "+JSON.stringify(msg));
       var sid = msg.sid;
       sidAddress[sid] = msg.ip;
       sidPort[sid] = msg.port;
@@ -99,15 +106,23 @@ server.on('message', function(buffer, rinfo) {
           mqtt.publish(payload); 
       }
       break;
+    case "write_ack":
+      var data = JSON.parse(msg.data);
+      payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
+      Utils.log(JSON.stringify(payload));
+      mqtt.publish(payload); 
+      break;
     case "heartbeat":
-      if (msg.model !== 'gateway') {
-        payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
-        Utils.log(JSON.stringify(payload));
+      if (msg.model === "gateway") {
+        token[msg.sid] = msg.token;
       }
+      var data = JSON.parse(msg.data);
+      payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "token":msg.token, "data": data};
+      //Utils.log(JSON.stringify(payload));
+      mqtt.publish(payload);
       break;
     default:
-      Utils.log("unknown cmd: "+msg.length+" from client "+rinfo.address+":"+rinfo.port);
-      Utils.log(msg);
+      Utils.log("unknown msg = "+JSON.stringify(msg)+" from client "+rinfo.address+":"+rinfo.port);
   }
 });
 
@@ -141,4 +156,47 @@ function read(sid) {
   }
 }
 
+function write(mqtt_payload) {
 
+  payload = mqtt_payload;
+  var sid = payload.sid;
+
+  if (sid in sidPort) {
+    switch (payload.model) {
+      case "gateway":
+        if (token[sid]) {
+          //Utils.log("token "+token[sid]);
+          var cipher = crypto.createCipheriv('aes-128-cbc', password, IV);
+          var key = cipher.update(token[sid], 'ascii', 'hex');
+          payload.data.key = key;
+          payload.data.rgb = rgb_buf(payload.data.rgb);
+        }
+        break;
+      default:
+    }
+    var msg = JSON.stringify(payload);
+    Utils.log("Send "+msg+" to "+sidAddress[sid]+":"+sidPort[sid]);
+    server.send(msg, 0, msg.length, sidPort[sid], sidAddress[sid]);
+  } else {
+    payload = {"cmd":"xm","msg":"sid >"+sid+"< unknown."};
+    Utils.log(JSON.stringify(payload));
+    mqtt.publish(payload);
+  }
+}
+
+function rgb_buf(rgb) {
+  //Utils.log("rgb "+rgb);
+  var bri = parseInt("0x"+rgb.substr(0,2));
+  var r = parseInt("0x"+rgb.substr(2,2));
+  var g = parseInt("0x"+rgb.substr(4,2));
+  var b = parseInt("0x"+rgb.substr(6,2));
+  //Utils.log("bri"+bri+" r"+r+" g"+g+" b"+b);
+                  
+  var buf = Buffer.alloc(4);
+  buf.writeUInt8(bri, 0);
+  buf.writeUInt8(r, 1);
+  buf.writeUInt8(g, 2);
+  buf.writeUInt8(b, 3);
+
+  return buf.readUInt32BE(0);
+}
