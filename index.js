@@ -8,7 +8,7 @@ const crypto = require('crypto');
 
 const package_name = "xiaomi-mqtt";
 
-var sidAddress = {}
+var sidAddress = {};
 var sidPort = {};
 var token = {};
 var payload = {};
@@ -20,7 +20,7 @@ var multicastAddress = config.xiaomi.multicastAddress || '224.0.0.50';
 var multicastPort =  config.xiaomi.multicastPort || 4321;
 var password = config.xiaomi.password || "";
 
-const IV = Buffer.from([0x17, 0x99, 0x6d, 0x09, 0x3d, 0x28, 0xdd, 0xb3, 0xba, 0x69, 0x5a, 0x2e, 0x6f, 0x58, 0x56, 0x2e])
+const IV = Buffer.from([0x17, 0x99, 0x6d, 0x09, 0x3d, 0x28, 0xdd, 0xb3, 0xba, 0x69, 0x5a, 0x2e, 0x6f, 0x58, 0x56, 0x2e]);
 
 var package_version = Utils.read_packageVersion();
 
@@ -90,21 +90,19 @@ server.on('message', function(buffer, rinfo) {
           var temperature = data.temperature ? Math.round(data.temperature / 10.0) / 10 : null;
           var humidity = data.humidity ? Math.round(data.humidity / 10.0) / 10: null;
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": {"voltage": data.voltage, "temperature":temperature, "humidity":humidity}};
-          Utils.log(JSON.stringify(payload));
-          mqtt.publish(payload);      
+          Utils.log(JSON.stringify(payload));  
           break;
         case "gateway":
         case "switch":
         case "sensor_motion.aq2":
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           Utils.log(JSON.stringify(payload));
-          mqtt.publish(payload); 
           break;       
         default:
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
-          Utils.log("unknown model: "+JSON.stringify(payload));
-          mqtt.publish(payload); 
+          Utils.log("unknown model "+JSON.stringify(payload));
       }
+      mqtt.publish(payload);
       break;
     case "write_ack":
       var data = JSON.parse(msg.data);
@@ -122,7 +120,7 @@ server.on('message', function(buffer, rinfo) {
       mqtt.publish(payload);
       break;
     default:
-      Utils.log("unknown msg = "+JSON.stringify(msg)+" from client "+rinfo.address+":"+rinfo.port);
+      Utils.log("unknown msg "+JSON.stringify(msg)+" from client "+rinfo.address+":"+rinfo.port);
   }
 });
 
@@ -169,10 +167,16 @@ function write(mqtt_payload) {
           var cipher = crypto.createCipheriv('aes-128-cbc', password, IV);
           var key = cipher.update(token[sid], 'ascii', 'hex');
           payload.data.key = key;
-          payload.data.rgb = rgb_buf(payload.data.rgb);
+          if ("rgb" in payload.data) {
+            payload.data.rgb = rgb_buf(payload.data.rgb);
+          }
         }
         break;
+      case "todo":
+        // todo
+        break;
       default:
+        // todo
     }
     var msg = JSON.stringify(payload);
     Utils.log("Send "+msg+" to "+sidAddress[sid]+":"+sidPort[sid]);
