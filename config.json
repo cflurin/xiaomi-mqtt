@@ -3,7 +3,7 @@
     "serverPort": 9898,
     "multicastAddress": "224.0.0.50",
     "multicastPort": 4321,
-    "password": "7D6E704A434F457F"
+    "password": "FFF..."
   },
   "mqtt": {
     "url": "mqtt://127.0.0.1",

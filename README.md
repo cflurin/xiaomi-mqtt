@@ -57,7 +57,7 @@ Edit `~/xiaomi-mqtt/config.json` to fit your requirements:
     "serverPort": 9898,
     "multicastAddress": "224.0.0.50",
     "multicastPort": 4321,
-    "password": "7D6E704A434F457F"
+    "password": "FFF..."
   },
   "mqtt": {
     "url": "mqtt://127.0.0.1",
@@ -110,7 +110,7 @@ topic: xiaomi/from
 payload: 
 {
   "cmd":"get_id_list_ack",
-  "sid":"286c07f096fb",
+  "sid":"fff...",
   "data":["158d00017118ac","158d0001a2eb66","158d0001f35b90","158d0001e52516"]
 }
 ```
@@ -132,7 +132,7 @@ payload:
 {
   "cmd": "heartbeat",
   "model": "gateway",
-  "sid": "286c07f096fb",
+  "sid": "fff...",
   "short_id": "0",
   "token": "v4GeGCO9TBpTUlVy",
   "data": {
@@ -154,7 +154,7 @@ payload:
 {
   "cmd": "report",
   "model": "gateway",
-  "sid": "286c07f096fb",
+  "sid": "fff...",
   "short_id": 0,
   "data": {
     "rgb": 0,
@@ -208,7 +208,7 @@ payload:
 
 ```sh
 topic: xiaomi/to/read
-payload: {"sid":"286c07f096fb"}
+payload: {"sid":"fff..."}
 ```
 
 response
@@ -219,7 +219,7 @@ payload:
 {
   "cmd":"read_ack",
   "model":"gateway",
-  "sid":"286c07f096fb",
+  "sid":"fff...",
   "short_id":0,
   "data":{"rgb":0,"illumination":1292,"proto_version":"1.0.9"}
 }
@@ -274,7 +274,7 @@ payload:
 {
   "cmd": "write",
   "model": "gateway",
-  "sid": "286c07f096fb",
+  "sid": "fff...",
   "data": {
       "rgb": "1000FF00"
   }
@@ -290,7 +290,7 @@ payload:
 {
   "cmd":"write_ack",
   "model":"gateway",
-  "sid":"286c07f096fb",
+  "sid":"fff...",
   "short_id":0,
   "data":{"rgb":268500736,"illumination":1292,"proto_version":"1.0.9"}
 }
@@ -300,7 +300,7 @@ payload:
 
 ```sh
 topic: xiaomi/to/get_id_list
-payload: {"sid":"286c07f096fb"}
+payload: {"sid":"fff..."}
 ```
 **Note:** sid = gateway sid.
 
@@ -311,7 +311,7 @@ topic: xiaomi/from
 payload:
 {
   "cmd":"get_id_list_ack",
-  "sid":"286c07f096fb",
+  "sid":"fff...",
   "data":["158d00017118ac","158d0001a2eb66","158d0001f35b90","158d0001e52516"]
 }
 ```
@@ -330,7 +330,7 @@ payload:
 Flow:
 
 ```sh
-[{"id":"9339669d.8e38b8","type":"mqtt out","z":"d0877ed4.9e0cc","name":"","topic":"xiaomi/to/write","qos":"","retain":"","broker":"325f5be5.555734","x":560,"y":480,"wires":[]},{"id":"c508a302.61467","type":"ui_colour_picker","z":"d0877ed4.9e0cc","name":"","label":"gateway color","group":"4d5fcade.c527d4","format":"hex","outformat":"string","showSwatch":true,"showPicker":false,"showValue":true,"showAlpha":false,"showLightness":true,"dynOutput":"false","order":0,"width":0,"height":0,"passthru":true,"topic":"","x":220,"y":480,"wires":[["dcd9ac95.fd93"]]},{"id":"dcd9ac95.fd93","type":"template","z":"d0877ed4.9e0cc","name":"map","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{\n    \"cmd\": \"write\",\n    \"model\": \"gateway\",\n    \"sid\": \"286c07f096fb\",\n    \"data\": {\n        \"rgb\": \"10{{payload}}\"\n    }\n}","output":"json","x":390,"y":480,"wires":[["9339669d.8e38b8"]]},{"id":"325f5be5.555734","type":"mqtt-broker","z":"","broker":"127.0.0.1","port":"1883","clientid":"","usetls":false,"compatmode":false,"keepalive":"60","cleansession":true,"willTopic":"","willQos":"0","willPayload":"","birthTopic":"","birthQos":"0","birthPayload":""},{"id":"4d5fcade.c527d4","type":"ui_group","z":"","name":"Xiaomi","tab":"f3d46e49.beaec","order":1,"disp":true,"width":"6"},{"id":"f3d46e49.beaec","type":"ui_tab","z":"","name":"Main","icon":"dashboard","order":1}]
+[{"id":"9339669d.8e38b8","type":"mqtt out","z":"d0877ed4.9e0cc","name":"","topic":"xiaomi/to/write","qos":"","retain":"","broker":"325f5be5.555734","x":560,"y":480,"wires":[]},{"id":"c508a302.61467","type":"ui_colour_picker","z":"d0877ed4.9e0cc","name":"","label":"gateway color","group":"4d5fcade.c527d4","format":"hex","outformat":"string","showSwatch":true,"showPicker":false,"showValue":true,"showAlpha":false,"showLightness":true,"dynOutput":"false","order":0,"width":0,"height":0,"passthru":true,"topic":"","x":220,"y":480,"wires":[["dcd9ac95.fd93"]]},{"id":"dcd9ac95.fd93","type":"template","z":"d0877ed4.9e0cc","name":"map","field":"payload","fieldType":"msg","format":"handlebars","syntax":"mustache","template":"{\n    \"cmd\": \"write\",\n    \"model\": \"gateway\",\n    \"sid\": \"fff...\",\n    \"data\": {\n        \"rgb\": \"10{{payload}}\"\n    }\n}","output":"json","x":390,"y":480,"wires":[["9339669d.8e38b8"]]},{"id":"325f5be5.555734","type":"mqtt-broker","z":"","broker":"127.0.0.1","port":"1883","clientid":"","usetls":false,"compatmode":false,"keepalive":"60","cleansession":true,"willTopic":"","willQos":"0","willPayload":"","birthTopic":"","birthQos":"0","birthPayload":""},{"id":"4d5fcade.c527d4","type":"ui_group","z":"","name":"Xiaomi","tab":"f3d46e49.beaec","order":1,"disp":true,"width":"6"},{"id":"f3d46e49.beaec","type":"ui_tab","z":"","name":"Main","icon":"dashboard","order":1}]
 ```
 
 ![node-red-ex3](https://user-images.githubusercontent.com/5056710/37528165-327882b8-2934-11e8-98b1-cdcbf039f724.jpeg)
@@ -338,5 +338,5 @@ Flow:
 Flow:
 
 ```sh
-[{"id":"aacbdba0.0519f8","type":"inject","z":"d0877ed4.9e0cc","name":"doorbell","topic":"","payload":"{\"cmd\":\"write\",\"model\":\"gateway\",\"sid\":\"286c07f096fb\",\"short_id\":0,\"key\":\"8\",\"data\":{\"mid\":10}}","payloadType":"json","repeat":"","crontab":"","once":false,"onceDelay":0.1,"x":120,"y":580,"wires":[["83a2b4f.eb0d748"]]},{"id":"8f56c43e.16c048","type":"inject","z":"d0877ed4.9e0cc","name":"police","topic":"","payload":"{\"cmd\":\"write\",\"model\":\"gateway\",\"sid\":\"286c07f096fb\",\"short_id\":0,\"key\":\"8\",\"data\":{\"mid\":1}}","payloadType":"json","repeat":"","crontab":"","once":false,"onceDelay":0.1,"x":110,"y":620,"wires":[["83a2b4f.eb0d748"]]},{"id":"83a2b4f.eb0d748","type":"mqtt out","z":"d0877ed4.9e0cc","name":"","topic":"xiaomi/to/write","qos":"","retain":"","broker":"325f5be5.555734","x":340,"y":580,"wires":[]},{"id":"325f5be5.555734","type":"mqtt-broker","z":"","broker":"192.168.0.35","port":"1883","clientid":"","usetls":false,"compatmode":false,"keepalive":"60","cleansession":true,"willTopic":"","willQos":"0","willPayload":"","birthTopic":"","birthQos":"0","birthPayload":""}]
+[{"id":"aacbdba0.0519f8","type":"inject","z":"d0877ed4.9e0cc","name":"doorbell","topic":"","payload":"{\"cmd\":\"write\",\"model\":\"gateway\",\"sid\":\"fff...\",\"short_id\":0,\"key\":\"8\",\"data\":{\"mid\":10}}","payloadType":"json","repeat":"","crontab":"","once":false,"onceDelay":0.1,"x":120,"y":580,"wires":[["83a2b4f.eb0d748"]]},{"id":"8f56c43e.16c048","type":"inject","z":"d0877ed4.9e0cc","name":"police","topic":"","payload":"{\"cmd\":\"write\",\"model\":\"gateway\",\"sid\":\"fff...\",\"short_id\":0,\"key\":\"8\",\"data\":{\"mid\":1}}","payloadType":"json","repeat":"","crontab":"","once":false,"onceDelay":0.1,"x":110,"y":620,"wires":[["83a2b4f.eb0d748"]]},{"id":"83a2b4f.eb0d748","type":"mqtt out","z":"d0877ed4.9e0cc","name":"","topic":"xiaomi/to/write","qos":"","retain":"","broker":"325f5be5.555734","x":340,"y":580,"wires":[]},{"id":"325f5be5.555734","type":"mqtt-broker","z":"","broker":"192.168.0.35","port":"1883","clientid":"","usetls":false,"compatmode":false,"keepalive":"60","cleansession":true,"willTopic":"","willQos":"0","willPayload":"","birthTopic":"","birthQos":"0","birthPayload":""}]
 ```

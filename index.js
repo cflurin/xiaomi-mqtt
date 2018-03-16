@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
+var program = require('commander');
 var dgram = require('dgram');
 var Mqtt = require('./lib/mqtt.js').Mqtt;
 var Utils = require('./lib/utils.js').Utils;
@@ -12,7 +13,7 @@ var sidAddress = {};
 var sidPort = {};
 var token = {};
 var payload = {};
-      
+
 var config = Utils.loadConfig("config.json");
 
 var serverPort = config.xiaomi.serverPort || 9898;
