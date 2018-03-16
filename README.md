@@ -52,6 +52,7 @@ Edit `~/xiaomi-mqtt/config.json` to fit your requirements:
     "serverPort": 9898,
     "multicastAddress": "224.0.0.50",
     "multicastPort": 4321,
+    "password": "7D6E704A434F457F"
   },
   "mqtt": {
     "url": "mqtt://127.0.0.1",
@@ -274,6 +275,7 @@ payload:
   }
 }
 ```
+**Note:** rgb = [brightness] [red] [green] [blue] - hex 00 to 0xFF
 
 response
 
