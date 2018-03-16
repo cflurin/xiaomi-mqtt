@@ -275,7 +275,7 @@ payload:
   }
 }
 ```
-**Note:** rgb = [brightness] [red] [green] [blue] - hex 00 to 0xFF
+**Note:** rgb = [brightness] [red] [green] [blue] - each hex 00 to FF
 
 response
 
