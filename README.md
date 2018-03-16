@@ -1,5 +1,10 @@
 # xiaomi-mqtt
 
+[![NPM version][npm-image]][npm-url]
+
+[npm-image]: http://img.shields.io/npm/v/xiaomi-mqtt.svg
+[npm-url]: https://npmjs.org/package/xiaomi-mqtt
+
 A Bridge between the Xiaomi Mi Smart Home Gateway and the Mqtt broker.
 
 Xiaomi-mqtt exchanges data between the xiaomi gateway and the mqtt-broker at a low-level, principally based on the device `sid` (Security Identifier?). The automation and dashboard tasks are implemented at a higher level. [Node-RED](http://nodered.org/) is the perfect tool to use for this purpose.
