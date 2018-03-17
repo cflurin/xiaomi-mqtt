@@ -10,5 +10,6 @@
     "port": 1883,
     "username": "foo",
     "password": "bar"
-  }
+  },
+  "loglevel": "info"
 }

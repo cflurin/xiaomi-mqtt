@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 'use strict';
 
-var program = require('commander');
 var dgram = require('dgram');
 var Mqtt = require('./lib/mqtt.js').Mqtt;
 var Utils = require('./lib/utils.js').Utils;
+const chalk = require('chalk');
+var log = require('loglevel');
+const prefix = require('loglevel-plugin-prefix');
+
 const crypto = require('crypto');
 
 const package_name = "xiaomi-mqtt";
@@ -20,20 +23,25 @@ var serverPort = config.xiaomi.serverPort || 9898;
 var multicastAddress = config.xiaomi.multicastAddress || '224.0.0.50';
 var multicastPort =  config.xiaomi.multicastPort || 4321;
 var password = config.xiaomi.password || "";
+var level = config.loglevel || "info";
 
 const IV = Buffer.from([0x17, 0x99, 0x6d, 0x09, 0x3d, 0x28, 0xdd, 0xb3, 0xba, 0x69, 0x5a, 0x2e, 0x6f, 0x58, 0x56, 0x2e]);
 
+setlogPrefix();
+log.setLevel(level);
+
 var package_version = Utils.read_packageVersion();
 
-Utils.log("Start "+package_name+", version "+package_version);
-//Utils.log("config " + JSON.stringify(config, null, 2));
+log.info("Start "+package_name+", version "+package_version);
+log.trace("config " + JSON.stringify(config, null, 2));
 
 var params = {
   "config": config,
   "package_name": package_name,
   "get_id_list": get_id_list,
   "read": read,
-  "write": write
+  "write": write,
+  "log": log
 }
 
 var mqtt = new Mqtt(params);
@@ -46,7 +54,7 @@ sendWhois();
 
 server.on('listening', function() {
   var address = server.address();
-  Utils.log("Start a UDP server, listening on port "+address.port);
+  log.info("Start a UDP server, listening on port "+address.port);
   server.addMembership(multicastAddress);
 })
 
@@ -55,15 +63,15 @@ server.on('message', function(buffer, rinfo) {
   
   try {
     msg = JSON.parse(buffer);
-    //Utils.log("msg "+JSON.stringify(msg));
+    log.trace("msg "+JSON.stringify(msg));
   } catch (e) {
-    Utils.log("invalid message: "+buffer);
+    log.error("invalid message: "+buffer);
     return;
   }
 
   switch (msg.cmd) {
     case "iam":
-      //Utils.log("msg "+JSON.stringify(msg));
+      log.trace("msg "+JSON.stringify(msg));
       var sid = msg.sid;
       sidAddress[sid] = msg.ip;
       sidPort[sid] = msg.port;
@@ -77,10 +85,10 @@ server.on('message', function(buffer, rinfo) {
         sidAddress[sid] = rinfo.address;
         sidPort[sid] = rinfo.port;
       }
-      //Utils.log("debug "+ JSON.stringify(sidAddress)+ " "+JSON.stringify(sidPort))
-      Utils.log("Gateway sid "+msg.sid+" Address "+sidAddress[sid]+", Port "+sidPort[sid]);
+      log.trace(JSON.stringify(sidAddress)+ " "+JSON.stringify(sidPort))
+      log.info("Gateway sid "+msg.sid+" Address "+sidAddress[sid]+", Port "+sidPort[sid]);
       payload = {"cmd":msg.cmd, "sid":msg.sid, "data":JSON.parse(msg.data)};
-      Utils.log(JSON.stringify(payload));
+      log.info(JSON.stringify(payload));
       mqtt.publish(payload);
       break;
     case "read_ack":
@@ -91,24 +99,24 @@ server.on('message', function(buffer, rinfo) {
           var temperature = data.temperature ? Math.round(data.temperature / 10.0) / 10 : null;
           var humidity = data.humidity ? Math.round(data.humidity / 10.0) / 10: null;
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": {"voltage": data.voltage, "temperature":temperature, "humidity":humidity}};
-          Utils.log(JSON.stringify(payload));  
+          log.debug(JSON.stringify(payload));  
           break;
         case "gateway":
         case "switch":
         case "sensor_motion.aq2":
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
-          Utils.log(JSON.stringify(payload));
+          log.debug(JSON.stringify(payload));
           break;       
         default:
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
-          Utils.log("unknown model "+JSON.stringify(payload));
+          log.warn("unknown model "+JSON.stringify(payload));
       }
       mqtt.publish(payload);
       break;
     case "write_ack":
       var data = JSON.parse(msg.data);
       payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
-      Utils.log(JSON.stringify(payload));
+      log.debug(JSON.stringify(payload));
       mqtt.publish(payload); 
       break;
     case "heartbeat":
@@ -117,40 +125,39 @@ server.on('message', function(buffer, rinfo) {
       }
       var data = JSON.parse(msg.data);
       payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "token":msg.token, "data": data};
-      //Utils.log(JSON.stringify(payload));
       mqtt.publish(payload);
       break;
     default:
-      Utils.log("unknown msg "+JSON.stringify(msg)+" from client "+rinfo.address+":"+rinfo.port);
+      log.warn("unknown msg "+JSON.stringify(msg)+" from client "+rinfo.address+":"+rinfo.port);
   }
 });
 
 // https://nodejs.org/api/errors.html
 server.on('error', function(err) {
-  Utils.log("error, msg - "+err.message+", stack - "+err.stack);
+  log.error("msg - "+err.message+", stack - "+err.stack);
   server.close();
 });
 
 function sendWhois() {
   var msg = '{"cmd": "whois"}';
-  Utils.log("Send "+msg+" to a multicast address "+multicastAddress+":"+multicastPort);
+  log.trace("Send "+msg+" to a multicast address "+multicastAddress+":"+multicastPort);
   server.send(msg, 0, msg.length, multicastPort, multicastAddress);
 }
 
 function get_id_list(sid) {
   var msg = '{"cmd":"get_id_list"}';
-  Utils.log("Send "+msg+" to "+sidAddress[sid]+":"+sidPort[sid]);
+  log.trace("Send "+msg+" to "+sidAddress[sid]+":"+sidPort[sid]);
   server.send(msg, 0, msg.length, sidPort[sid], sidAddress[sid]);
 }
 
 function read(sid) {
   if (sid in sidPort) {
     var msg = '{"cmd":"read", "sid":"' + sid + '"}';
-    //Utils.log("Send "+msg+" to "+sidAddress[sid]+":"+sidPort[sid]);
+    log.trace("Send "+msg+" to "+sidAddress[sid]+":"+sidPort[sid]);
     server.send(msg, 0, msg.length, sidPort[sid], sidAddress[sid]);
   } else {
     payload = {"cmd":"xm","msg":"sid >"+sid+"< unknown."};
-    Utils.log(JSON.stringify(payload));
+    log.warn(JSON.stringify(payload));
     mqtt.publish(payload);
   }
 }
@@ -164,7 +171,6 @@ function write(mqtt_payload) {
     switch (payload.model) {
       case "gateway":
         if (token[sid]) {
-          //Utils.log("token "+token[sid]);
           var cipher = crypto.createCipheriv('aes-128-cbc', password, IV);
           var key = cipher.update(token[sid], 'ascii', 'hex');
           payload.data.key = key;
@@ -180,22 +186,20 @@ function write(mqtt_payload) {
         // todo
     }
     var msg = JSON.stringify(payload);
-    Utils.log("Send "+msg+" to "+sidAddress[sid]+":"+sidPort[sid]);
+    log.trace("Send "+msg+" to "+sidAddress[sid]+":"+sidPort[sid]);
     server.send(msg, 0, msg.length, sidPort[sid], sidAddress[sid]);
   } else {
     payload = {"cmd":"xm","msg":"sid >"+sid+"< unknown."};
-    Utils.log(JSON.stringify(payload));
+    log.warn(JSON.stringify(payload));
     mqtt.publish(payload);
   }
 }
 
 function rgb_buf(rgb) {
-  //Utils.log("rgb "+rgb);
   var bri = parseInt("0x"+rgb.substr(0,2));
   var r = parseInt("0x"+rgb.substr(2,2));
   var g = parseInt("0x"+rgb.substr(4,2));
   var b = parseInt("0x"+rgb.substr(6,2));
-  //Utils.log("bri"+bri+" r"+r+" g"+g+" b"+b);
                   
   var buf = Buffer.alloc(4);
   buf.writeUInt8(bri, 0);
@@ -204,4 +208,23 @@ function rgb_buf(rgb) {
   buf.writeUInt8(b, 3);
 
   return buf.readUInt32BE(0);
+}
+
+function setlogPrefix() {
+  const colors = {
+    TRACE: chalk.magentaBright,
+    DEBUG: chalk.cyanBright,
+    INFO: chalk.whiteBright,
+    WARN: chalk.yellowBright,
+    ERROR: chalk.redBright,
+  };
+
+  prefix.reg(log);
+  
+  prefix.apply(log, {
+    format(level, name, timestamp) {
+      //return `${chalk.white(`[${timestamp}]`)} ${colors[level.toUpperCase()](level)} ${chalk.green(`${name}`)}`;
+      return `${chalk.white(`[${timestamp}]`)} ${colors[level.toUpperCase()](level)}`;
+    },
+  });
 }

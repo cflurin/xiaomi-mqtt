@@ -21,7 +21,7 @@ Devices (models) implemented so far:
 ### Installation
 
 ```sh
-sudo npm install -g xiaomi-mqtt
+sudo npm install -g --unsafe-perm xiaomi-mqtt
 ```
 
 ### Installation from GitHub
@@ -64,11 +64,17 @@ Edit `~/xiaomi-mqtt/config.json` to fit your requirements:
     "port": 1883,
     "username": "foo",
     "password": "bar"
-  }
+  },
+  "loglevel": "info"
 }
 ```
 
+```sh
+"loglevel": <"debug"> | <"info"> | <"warn"> | <"error">
+```
+
 Replace `127.0.0.1` with the address of your mqtt broker.
+
 
 ### Usage (global installation)
 
