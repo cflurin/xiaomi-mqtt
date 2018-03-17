@@ -5,18 +5,18 @@ var dgram = require('dgram');
 var Mqtt = require('./lib/mqtt.js').Mqtt;
 var Utils = require('./lib/utils.js').Utils;
 var log = require('loglevel');
-const prefix = require('loglevel-plugin-prefix');
-
+//const prefix = require('loglevel-plugin-prefix');
 const crypto = require('crypto');
-
-const package_name = "xiaomi-mqtt";
 
 var sidAddress = {};
 var sidPort = {};
 var token = {};
 var payload = {};
 
-var config = Utils.loadConfig("config.json");
+const IV = Buffer.from([0x17, 0x99, 0x6d, 0x09, 0x3d, 0x28, 0xdd, 0xb3, 0xba, 0x69, 0x5a, 0x2e, 0x6f, 0x58, 0x56, 0x2e]);
+const package_name = Utils.read_packageName();
+const package_version = Utils.read_packageVersion();
+const config = Utils.loadConfig("config.json");
 
 var serverPort = config.xiaomi.serverPort || 9898;
 var multicastAddress = config.xiaomi.multicastAddress || '224.0.0.50';
@@ -24,12 +24,8 @@ var multicastPort =  config.xiaomi.multicastPort || 4321;
 var password = config.xiaomi.password || "";
 var level = config.loglevel || "info";
 
-const IV = Buffer.from([0x17, 0x99, 0x6d, 0x09, 0x3d, 0x28, 0xdd, 0xb3, 0xba, 0x69, 0x5a, 0x2e, 0x6f, 0x58, 0x56, 0x2e]);
-
-Utils.setlogPrefix(log, prefix);
+Utils.setlogPrefix(log);
 log.setLevel(level);
-
-var package_version = Utils.read_packageVersion();
 
 log.info("Start "+package_name+", version "+package_version);
 log.trace("config " + JSON.stringify(config, null, 2));
