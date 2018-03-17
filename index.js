@@ -4,7 +4,6 @@
 var dgram = require('dgram');
 var Mqtt = require('./lib/mqtt.js').Mqtt;
 var Utils = require('./lib/utils.js').Utils;
-const chalk = require('chalk');
 var log = require('loglevel');
 const prefix = require('loglevel-plugin-prefix');
 
@@ -27,7 +26,7 @@ var level = config.loglevel || "info";
 
 const IV = Buffer.from([0x17, 0x99, 0x6d, 0x09, 0x3d, 0x28, 0xdd, 0xb3, 0xba, 0x69, 0x5a, 0x2e, 0x6f, 0x58, 0x56, 0x2e]);
 
-setlogPrefix();
+Utils.setlogPrefix(log, prefix);
 log.setLevel(level);
 
 var package_version = Utils.read_packageVersion();
@@ -175,7 +174,7 @@ function write(mqtt_payload) {
           var key = cipher.update(token[sid], 'ascii', 'hex');
           payload.data.key = key;
           if ("rgb" in payload.data) {
-            payload.data.rgb = rgb_buf(payload.data.rgb);
+            payload.data.rgb = Utils.rgb_buf(payload.data.rgb);
           }
         }
         break;
@@ -193,38 +192,4 @@ function write(mqtt_payload) {
     log.warn(JSON.stringify(payload));
     mqtt.publish(payload);
   }
-}
-
-function rgb_buf(rgb) {
-  var bri = parseInt("0x"+rgb.substr(0,2));
-  var r = parseInt("0x"+rgb.substr(2,2));
-  var g = parseInt("0x"+rgb.substr(4,2));
-  var b = parseInt("0x"+rgb.substr(6,2));
-                  
-  var buf = Buffer.alloc(4);
-  buf.writeUInt8(bri, 0);
-  buf.writeUInt8(r, 1);
-  buf.writeUInt8(g, 2);
-  buf.writeUInt8(b, 3);
-
-  return buf.readUInt32BE(0);
-}
-
-function setlogPrefix() {
-  const colors = {
-    TRACE: chalk.magentaBright,
-    DEBUG: chalk.cyanBright,
-    INFO: chalk.whiteBright,
-    WARN: chalk.yellowBright,
-    ERROR: chalk.redBright,
-  };
-
-  prefix.reg(log);
-  
-  prefix.apply(log, {
-    format(level, name, timestamp) {
-      //return `${chalk.white(`[${timestamp}]`)} ${colors[level.toUpperCase()](level)} ${chalk.green(`${name}`)}`;
-      return `${chalk.white(`[${timestamp}]`)} ${colors[level.toUpperCase()](level)}`;
-    },
-  });
 }
