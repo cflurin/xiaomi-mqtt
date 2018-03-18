@@ -5,7 +5,6 @@ var dgram = require('dgram');
 var Mqtt = require('./lib/mqtt.js').Mqtt;
 var Utils = require('./lib/utils.js').Utils;
 var log = require('loglevel');
-//const prefix = require('loglevel-plugin-prefix');
 const crypto = require('crypto');
 
 var sidAddress = {};
