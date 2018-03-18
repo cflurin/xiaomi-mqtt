@@ -32,17 +32,11 @@ Clone the source repository directly from GitHub to a local folder:
 git clone https://github.com/cflurin/xiaomi-mqtt.git
 ```
 
-Global Installation:
-
-```sh
-cd xiaomi-mqtt
-npm install -g --unsafe-perm
-```
 Local Installation:
 
 ```sh
 cd xiaomi-mqtt
-npm install --unsafe-perm
+npm install
 ```
 
 ### Configuration
