@@ -9,13 +9,14 @@ A Bridge between the Xiaomi Mi Smart Home Gateway and the Mqtt broker.
 
 Xiaomi-mqtt exchanges data between the xiaomi gateway and the mqtt-broker at a low-level, principally based on the device `sid` (Security Identifier?). The automation and dashboard tasks are implemented at a higher level. [Node-RED](http://nodered.org/) is the perfect tool to use for this purpose.
 
-Devices (models) implemented so far:
+Defined Devices (models) so far:
 * gateway
 * sensor_ht
 * sensor_motion.aq2
 * magnet
 * switch
 
+**Note:** not defined devices (models) will also send a payload, the log will report a warning `to define`.
 
 ### Installation
 

@@ -104,7 +104,7 @@ server.on('message', function(buffer, rinfo) {
           break;       
         default:
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
-          log.warn("unknown model "+JSON.stringify(payload));
+          log.warn("to define "+JSON.stringify(payload));
       }
       mqtt.publish(payload);
       break;
