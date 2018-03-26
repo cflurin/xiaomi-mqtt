@@ -16,7 +16,7 @@ Defined Devices (models) so far:
 * magnet
 * switch
 
-**Note:** not defined devices (models) will also send a payload, the log will report a warning `to define`.
+**Note:** not defined devices (models) will also send a payload and a warning `to define` wil be logged.
 
 ### Installation
 
