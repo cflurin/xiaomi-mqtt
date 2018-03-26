@@ -183,28 +183,9 @@ payload:
 ```
 
 ```sh
-topic: xiaomi/from
-payload:
-{
-  "cmd":"report",
-  "model":"sensor_ht",
-  "sid":"158d0001a2eb66",
-  "short_id":30124,
-  "data":{"voltage":3005,"temperature":null,"humidity":51.7}
-}
-```
-**switch**
-
-```sh
-topic: xiaomi/from
-payload:
-{
-  "cmd":"report",
-  "model":"switch",
-  "sid":"158d0001f35b90",
-  "short_id":46517,
-  "data":{"status":"click"}
-}
+"data": {"voltage":3005,"temperature":16.7,"humidity":null}
+or
+"data": {"voltage":3005,"temperature":null,"humidity":51.7} 
 ```
 
 **magnet**
@@ -224,18 +205,27 @@ payload:
 ```
 
 ```sh
+"status": "close" or "open"
+```
+
+**switch**
+
+```sh
 topic: xiaomi/from
 payload:
 {
-  "cmd": "report",
-  "model": "magnet",
-  "sid": "158d0001f3651f",
-  "short_id": 57029,
-  "data": {
-    "status": "open"
-  }
+  "cmd":"report",
+  "model":"switch",
+  "sid":"158d0001f35b90",
+  "short_id":46517,
+  "data":{"status":"click"}
 }
 ```
+
+```sh
+"status": "click" or "double_click" or "long_click_press" or "long_click_release"
+```
+
 ### read
 
 **gateway**
