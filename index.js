@@ -69,6 +69,7 @@ server.on('message', function(buffer, rinfo) {
       var sid = msg.sid;
       sidAddress[sid] = msg.ip;
       sidPort[sid] = msg.port;
+      log.info("Gateway sid "+msg.sid+" Address "+sidAddress[sid]+", Port "+sidPort[sid]);
       get_id_list(sid);
       break;
     case "get_id_list_ack":
@@ -80,9 +81,8 @@ server.on('message', function(buffer, rinfo) {
         sidPort[sid] = rinfo.port;
       }
       log.trace(JSON.stringify(sidAddress)+ " "+JSON.stringify(sidPort))
-      log.info("Gateway sid "+msg.sid+" Address "+sidAddress[sid]+", Port "+sidPort[sid]);
       payload = {"cmd":msg.cmd, "sid":msg.sid, "data":JSON.parse(msg.data)};
-      log.info(JSON.stringify(payload));
+      log.debug(JSON.stringify(payload));
       mqtt.publish(payload);
       break;
     case "read_ack":
@@ -98,6 +98,7 @@ server.on('message', function(buffer, rinfo) {
         case "gateway":
         case "switch":
         case "sensor_motion.aq2":
+        case "magnet":
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           log.debug(JSON.stringify(payload));
           break;       
@@ -162,15 +163,26 @@ function write(mqtt_payload) {
   var sid = payload.sid;
 
   if (sid in sidPort) {
+    try {
+      var cipher = crypto.createCipheriv('aes-128-cbc', password, IV);
+    } catch (e) {
+      payload = {"cmd":"xm","msg":"Cipher "+JSON.stringify(cipher)+", check the password in config.json."};
+      log.error(JSON.stringify(payload));
+      mqtt.publish(payload);
+      return;
+    }
+    var key = cipher.update(token[sid], 'ascii', 'hex');
+    payload.data.key = key;
+    
     switch (payload.model) {
       case "gateway":
         if (token[sid]) {
-          var cipher = crypto.createCipheriv('aes-128-cbc', password, IV);
-          var key = cipher.update(token[sid], 'ascii', 'hex');
-          payload.data.key = key;
           if ("rgb" in payload.data) {
             payload.data.rgb = Utils.rgb_buf(payload.data.rgb);
           }
+          var msg = JSON.stringify(payload);
+          log.trace("Send "+msg+" to "+sidAddress[sid]+":"+sidPort[sid]);
+          server.send(msg, 0, msg.length, sidPort[sid], sidAddress[sid]);
         }
         break;
       case "todo":
@@ -179,9 +191,6 @@ function write(mqtt_payload) {
       default:
         // todo
     }
-    var msg = JSON.stringify(payload);
-    log.trace("Send "+msg+" to "+sidAddress[sid]+":"+sidPort[sid]);
-    server.send(msg, 0, msg.length, sidPort[sid], sidAddress[sid]);
   } else {
     payload = {"cmd":"xm","msg":"sid >"+sid+"< unknown."};
     log.warn(JSON.stringify(payload));
