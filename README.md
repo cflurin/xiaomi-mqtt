@@ -9,15 +9,6 @@ A Bridge between the Xiaomi Mi Smart Home Gateway and the Mqtt broker.
 
 Xiaomi-mqtt exchanges data between the xiaomi gateway and the mqtt-broker at a low-level, principally based on the device `sid` (Security Identifier?). The automation and dashboard tasks are implemented at a higher level. [Node-RED](http://nodered.org/) is the perfect tool to use for this purpose.
 
-Defined Devices (models) so far:
-* gateway
-* sensor_ht
-* sensor_motion.aq2
-* magnet
-* switch
-
-**Note:** not defined devices (models) will also send a payload and a warning `to define` wil be logged.
-
 ### Installation
 
 ```sh
@@ -47,7 +38,7 @@ Copy the `config.json` file to the `.xiaomi-mqtt` folder inside of your home fol
 mkdir ~/.xiaomi-mqtt
 cp config.json ~/.xiaomi-mqtt/
 ```
-On macOS and Linux, the full path for your config.json would be `~/.xiaomi-mqtt/config.json`.
+On Linux the full path for your config.json would be `~/.xiaomi-mqtt/config.json`.
 
 Edit `~/xiaomi-mqtt/config.json` to fit your requirements:
 
@@ -340,6 +331,16 @@ payload:
   "data":["158d00017118ac","158d0001a2eb66","158d0001f35b90","158d0001e52516"]
 }
 ```
+
+## Tested devices (models):
+
+* gateway
+* sensor_ht
+* sensor_motion.aq2
+* magnet
+* switch
+
+**Note:** Untested devices using the same format will also send a payload.
 
 #
 # Node-RED examples
