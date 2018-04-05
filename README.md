@@ -197,7 +197,7 @@ payload:
 ```
 
 ```sh
-"status": "close" or "open"
+"status": "close", "open"
 ```
 
 **switch**
@@ -215,7 +215,47 @@ payload:
 ```
 
 ```sh
-"status": "click" or "double_click" or "long_click_press" or "long_click_release"
+"status": "click", "double_click", "long_click_press", "long_click_release"
+```
+
+**86sw2**
+
+```sh
+topic: xiaomi/from
+payload:
+{
+  "cmd":"report",
+  "model":"86sw2",
+  "sid":"158d0001f55b88",
+  "short_id":33911,
+  "data":{"channel_0":"click"}
+}
+```
+
+```sh
+"data":{"channel_0":"click"}
+or
+"data":{"channel_1":"click"}
+```
+
+**cube**
+
+```sh
+topic: xiaomi/from
+payload:
+{
+  "cmd":"report",
+  "model":"cube",
+  "sid":"158d0003102db5",
+  "short_id":46605,
+  "data":{"status":"move"}
+}
+```
+
+```sh
+"status": "move", "flip90", "flip180", "tape_twice", "shake_air", "alert"
+or
+"rotate": "99,999", "-99.999"
 ```
 
 ### read
@@ -339,6 +379,8 @@ payload:
 * sensor_motion.aq2
 * magnet
 * switch
+* 86sw2
+* cube
 
 **Note:** Untested devices using the same format will also send a payload.
 

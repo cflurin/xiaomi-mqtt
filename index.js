@@ -96,9 +96,11 @@ server.on('message', function(buffer, rinfo) {
           log.debug(JSON.stringify(payload));  
           break;
         case "gateway":
-        case "switch":
         case "sensor_motion.aq2":
         case "magnet":
+        case "switch":
+        case "86sw2":
+        case "cube":
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           log.debug(JSON.stringify(payload));
           break;       
