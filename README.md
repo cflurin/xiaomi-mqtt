@@ -138,6 +138,22 @@ payload:
 }
 ```
 
+**cube**
+
+```sh
+topic: xiaomi/from
+payload:
+{
+  "cmd": "heartbeat",
+  "model": "cube",
+  "sid": "158d0003102db5",
+  "short_id": 46605,
+  "data": {
+    "voltage": 2985
+  }
+}
+```
+
 ### reporting
 
 Xiaomi-mqtt sends periodically or on events device reports.
