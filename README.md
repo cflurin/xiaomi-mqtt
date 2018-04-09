@@ -12,7 +12,7 @@ Xiaomi-mqtt exchanges data between the xiaomi gateway and the mqtt-broker at a l
 ### Installation
 
 ```sh
-sudo npm install -g --unsafe-perm xiaomi-mqtt
+sudo npm install -g xiaomi-mqtt
 ```
 
 ### Installation from GitHub
