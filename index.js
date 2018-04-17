@@ -58,7 +58,7 @@ server.on('message', function(buffer, rinfo) {
   try {
     msg = JSON.parse(buffer);
     log.trace("msg "+JSON.stringify(msg));
-  } catch (e) {
+  } catch (err) {
     log.error("invalid message: "+buffer);
     return;
   }
@@ -131,8 +131,18 @@ server.on('message', function(buffer, rinfo) {
 
 // https://nodejs.org/api/errors.html
 server.on('error', function(err) {
-  log.error("msg - "+err.message+", stack - "+err.stack);
-  server.close();
+  log.error("server.on('error') "+err.message);
+  if (err.message.includes("EADDRINUSE")) {
+    log.info("use 'lsof -i -P' to check for ports used.");
+  }
+  log.trace(err.stack);
+  try {
+    server.close();
+  } catch(err) {
+    log.error("server.close() "+err.message);
+    log.trace(err.stack);
+    process.exit(2);
+  }
 });
 
 function sendWhois() {
