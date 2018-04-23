@@ -203,7 +203,7 @@ function write(mqtt_payload) {
           // nothing
       }
       msg = JSON.stringify(payload);
-      log.debug("Send "+msg+" to "+sidAddress[sid]+":"+sidPort[sid]);
+      log.debug(msg);
       server.send(msg, 0, msg.length, sidPort[sid], sidAddress[sid]);   
     } else {
       payload = {"cmd":"xm","msg":"gateway token unknown."};
