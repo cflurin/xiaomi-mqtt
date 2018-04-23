@@ -11,6 +11,7 @@ var sidAddress = {};
 var sidPort = {};
 var token = {};
 var payload = {};
+var gateway_sid; // todo: multliple gateway
 
 const IV = Buffer.from([0x17, 0x99, 0x6d, 0x09, 0x3d, 0x28, 0xdd, 0xb3, 0xba, 0x69, 0x5a, 0x2e, 0x6f, 0x58, 0x56, 0x2e]);
 const package_name = Utils.read_packageName();
@@ -69,6 +70,7 @@ server.on('message', function(buffer, rinfo) {
       var sid = msg.sid;
       sidAddress[sid] = msg.ip;
       sidPort[sid] = msg.port;
+      gateway_sid = msg.sid;
       log.info("Gateway sid "+msg.sid+" Address "+sidAddress[sid]+", Port "+sidPort[sid]);
       get_id_list(sid);
       break;
@@ -117,11 +119,14 @@ server.on('message', function(buffer, rinfo) {
       mqtt.publish(payload); 
       break;
     case "heartbeat":
+      var data = JSON.parse(msg.data);
       if (msg.model === "gateway") {
         token[msg.sid] = msg.token;
       }
-      var data = JSON.parse(msg.data);
       payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "token":msg.token, "data": data};
+      if (msg.model !== "gateway") {
+        log.debug(JSON.stringify(payload));
+      }
       mqtt.publish(payload);
       break;
     default:
@@ -171,6 +176,7 @@ function read(sid) {
 
 function write(mqtt_payload) {
 
+  var msg;
   payload = mqtt_payload;
   var sid = payload.sid;
 
@@ -183,25 +189,26 @@ function write(mqtt_payload) {
       mqtt.publish(payload);
       return;
     }
-    var key = cipher.update(token[sid], 'ascii', 'hex');
-    payload.data.key = key;
-    
-    switch (payload.model) {
-      case "gateway":
-        if (token[sid]) {
+
+    if (token[gateway_sid]) {
+      var key = cipher.update(token[gateway_sid], 'ascii', 'hex');
+      payload.data.key = key;
+      switch (payload.model) {
+        case "gateway":
           if ("rgb" in payload.data) {
             payload.data.rgb = Utils.rgb_buf(payload.data.rgb);
           }
-          var msg = JSON.stringify(payload);
-          log.trace("Send "+msg+" to "+sidAddress[sid]+":"+sidPort[sid]);
-          server.send(msg, 0, msg.length, sidPort[sid], sidAddress[sid]);
-        }
-        break;
-      case "todo":
-        // todo
-        break;
-      default:
-        // todo
+          break;
+        default:
+          // nothing
+      }
+      msg = JSON.stringify(payload);
+      log.debug("Send "+msg+" to "+sidAddress[sid]+":"+sidPort[sid]);
+      server.send(msg, 0, msg.length, sidPort[sid], sidAddress[sid]);   
+    } else {
+      payload = {"cmd":"xm","msg":"gateway token unknown."};
+      log.warn(JSON.stringify(payload));
+      mqtt.publish(payload);      
     }
   } else {
     payload = {"cmd":"xm","msg":"sid >"+sid+"< unknown."};
