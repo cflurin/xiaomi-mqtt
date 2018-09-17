@@ -54,11 +54,25 @@ Edit `~/xiaomi-mqtt/config.json` to fit your requirements:
     "url": "mqtt://127.0.0.1",
     "port": 1883,
     "username": "foo",
-    "password": "bar"
+    "password": "bar",
+    "topic_mode": "full",    
   },
-  "loglevel": "info"
+  "loglevel": "info",
+  "heartbeatfreq": 6,
 }
 ```
+
+```sh
+"topic_mode": <"from"> | <"full"> | <"both">
+```
+
+Under what topic message are sent, 
+
+- `from` mean legacy default (the only one available available until this option)
+- `full` new topic mode that allow you to do some topic filtering directly on client side, the format is described on topic below
+- `both` 2 topics are sent, the legacy `from` and the new `full` 
+
+**Benefit of full topic**
 
 ```sh
 "loglevel": <"debug"> | <"info"> | <"warn"> | <"error">
@@ -66,6 +80,7 @@ Edit `~/xiaomi-mqtt/config.json` to fit your requirements:
 
 Replace `127.0.0.1` with the address of your mqtt broker.
 
+By default the gateway send heartbeat every 10s which can do some pollution when testing/debug, the new counter parameter in config named `heartbeatfreq` avoid this, in the example above set to 6 means only send a MQTT message each 6 heartbeat, so each 60s. Note this apply only to gateway heartbeat not the device's one.
 
 ### Usage (global installation)
 
@@ -82,12 +97,117 @@ Use `ctrl c` to stop xiaomi-mqtt.
 #
 # mqtt API
 
-The data (payload) is sent/received in a JSON format using following topics:
+If the configuration option `topic_mode` is set to `from` or `both`, the data (payload) is sent/received in a JSON format using following topics:
 
 * xiaomi/from
 * xiaomi/to/read
 * xiaomi/to/write
 * xiaomi/to/get_id_list
+
+If the configuration option `topic_mode` is set to `full` or `both`, the data (payload) is sent/received in a JSON format using following topics:
+
+```sh
+topic: xiaomi/from/{{sid}}/{{cmd}}/{{model}}
+payload:
+{
+  "cmd":"report",
+  "model":"cube",
+  "sid":"158d0003102db5",
+  "short_id":46605,
+  "data":{"status":"move"}
+}
+```
+
+if the device return a status, the topic is extended by status allowing for example to get only status change messages
+```sh
+topic: xiaomi/from/{{sid}}/{{cmd}}/{{model}}/status
+payload:
+{
+  "cmd":"report",
+  "model":"cube",
+  "sid":"158d0003102db5",
+  "short_id":46605,
+  "data":{"status":"flip90"}
+}
+```
+
+What does this means? You can do subscribtion filtering
+
+**subscribe to a specific device**
+
+```sh
+topic: xiaomi/from/158d0003102db5/#
+payload:
+{
+  "cmd":"report",
+  "model":"cube",
+  "sid":"158d0003102db5",
+  "short_id":46605,
+  "data":{"status":"move"}
+}
+```
+
+**subscribe to all devices report event**
+
+```sh
+topic: xiaomi/from/+/report/#
+payload:
+{
+  "cmd": "report",
+  "model": "magnet",
+  "sid": "158d0001f3651f",
+  "short_id": 57029,
+  "data": {
+    "status": "close"
+  }
+}
+```
+
+**subscribe to temperature humidity devices only**
+
+```sh
+topic: xiaomi/from/+/+/sensor_ht/#
+payload:
+{
+  "cmd":"report",
+  "model":"sensor_ht",
+  "sid":"158d0001a2eb66",
+  "short_id":30124,
+  "data":{"voltage":3005,"temperature":16.7,"humidity":40.5}
+}
+```
+
+**subscribe to all cube status event**
+
+```sh
+topic: xiaomi/from/+/+/cube/status
+payload:
+{
+  "cmd":"report",
+  "model":"cube",
+  "sid":"158d0003102db5",
+  "short_id":46605,
+  "data":{"status":"move"}
+}
+```
+
+
+
+
+**subscribe to all devices status event**
+
+```sh
+topic: xiaomi/from/+/+/+/status
+payload:
+{
+  "cmd":"report",
+  "model":"cube",
+  "sid":"158d0003102db5",
+  "short_id":46605,
+  "data":{"status":"move"}
+}
+```
+
 
 ## Howto examples
 
