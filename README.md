@@ -72,8 +72,6 @@ Under what topic message are sent,
 - `full` new topic mode that allow you to do some topic filtering directly on client side, the format is described on topic below
 - `both` 2 topics are sent, the legacy `from` and the new `full` 
 
-**Benefit of full topic**
-
 ```sh
 "loglevel": <"debug"> | <"info"> | <"warn"> | <"error">
 ```
@@ -104,10 +102,19 @@ If the configuration option `topic_mode` is set to `from` or `both`, the data (p
 * xiaomi/to/write
 * xiaomi/to/get_id_list
 
-If the configuration option `topic_mode` is set to `full` or `both`, the data (payload) is sent/received in a JSON format using following topics:
+**Benefit of full topic option**
+
+If the configuration option `topic_mode` is set to `full` or `both`, only the topic `from` change, the data (payload) is sent/received in a JSON format using following topics:
+
+* xiaomi/from/{{sid}}/{{cmd}}/{{model}}
+* xiaomi/from/{{sid}}/{{cmd}}/{{model}}/status (if status sent by device)
+
+with `sid`, `cmd`, `model`, replaced by the ones sent by the device. I let the payload untouched to be sure all information will be there.
+
+So for example you can have a new topic like 
 
 ```sh
-topic: xiaomi/from/{{sid}}/{{cmd}}/{{model}}
+topic: xiaomi/from/158d0003102db5/report/cube
 payload:
 {
   "cmd":"report",
@@ -118,9 +125,9 @@ payload:
 }
 ```
 
-if the device return a status, the topic is extended by status allowing for example to get only status change messages
+if the device return a status, the topic is extended by status allowing for example to get only status change messages. May be can just use report and this option is not usefull, I don't know
 ```sh
-topic: xiaomi/from/{{sid}}/{{cmd}}/{{model}}/status
+topic: xiaomi/from/158d0003102db5/report/cube/status
 payload:
 {
   "cmd":"report",
@@ -131,7 +138,7 @@ payload:
 }
 ```
 
-What does this means? You can do subscribtion filtering
+What does this means? You can do subscribtion filtering, I strongly suggest you to read the official [documentation](https://mosquitto.org/man/mqtt-7.html) on this point.
 
 **subscribe to a specific device**
 
