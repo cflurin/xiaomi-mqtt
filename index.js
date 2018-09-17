@@ -23,6 +23,8 @@ var multicastAddress = config.xiaomi.multicastAddress || '224.0.0.50';
 var multicastPort =  config.xiaomi.multicastPort || 4321;
 var password = config.xiaomi.password || "";
 var level = config.loglevel || "info";
+var heartbeatfreq = config.heartbeatfreq || 1;
+global.hb_count = heartbeatfreq;
 
 Utils.setlogPrefix(log);
 log.setLevel(level);
@@ -119,15 +121,21 @@ server.on('message', function(buffer, rinfo) {
       mqtt.publish(payload); 
       break;
     case "heartbeat":
-      var data = JSON.parse(msg.data);
-      if (msg.model === "gateway") {
-        token[msg.sid] = msg.token;
+    if (hb_count > 1) {
+        hb_count = hb_count - 1;
+        //log.info("heartbeat not published, "+hb_count+" before next publish");
+      } else {
+        hb_count = heartbeatfreq;
+        var data = JSON.parse(msg.data);
+        if (msg.model === "gateway") {
+            token[msg.sid] = msg.token;
+        }
+        payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "token":msg.token, "data": data};
+        if (msg.model !== "gateway") {
+          log.debug(JSON.stringify(payload));
+        }
+        mqtt.publish(payload);
       }
-      payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "token":msg.token, "data": data};
-      if (msg.model !== "gateway") {
-        log.debug(JSON.stringify(payload));
-      }
-      mqtt.publish(payload);
       break;
     default:
       log.warn("unknown msg "+JSON.stringify(msg)+" from client "+rinfo.address+":"+rinfo.port);
