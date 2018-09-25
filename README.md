@@ -63,12 +63,12 @@ Edit `~/xiaomi-mqtt/config.json` to fit your requirements:
 ```
 
 ```sh
-"topic_mode": <"from"> | <"full"> | <"both">
+"topic_mode": <"short"> | <"full"> | <"both">
 ```
 
 Under what topic message are sent, 
 
-- `from` mean legacy default (the only one available available until this option)
+- `short` mean legacy default (the only one available available until this option)
 - `full` new topic mode that allow you to do some topic filtering directly on client side, the format is described on topic below
 - `both` 2 topics are sent, the legacy `from` and the new `full` 
 
@@ -95,7 +95,7 @@ Use `ctrl c` to stop xiaomi-mqtt.
 #
 # mqtt API
 
-If the configuration option `topic_mode` is set to `from` or `both`, the data (payload) is sent/received in a JSON format using following topics:
+If the configuration option `topic_mode` is set to `short` or `both`, the data (payload) is sent/received in a JSON format using following topics:
 
 * xiaomi/from
 * xiaomi/to/read
@@ -104,7 +104,7 @@ If the configuration option `topic_mode` is set to `from` or `both`, the data (p
 
 **Benefit of full topic option**
 
-If the configuration option `topic_mode` is set to `full` or `both`, only the topic `from` change, the data (payload) is sent/received in a JSON format using following topics:
+If the configuration option `topic_mode` is set to `full` or `both`, only the topic `/from` change, the data (payload) is sent/received in a JSON format using following topics:
 
 * xiaomi/from/{{sid}}/{{cmd}}/{{model}}
 * xiaomi/from/{{sid}}/{{cmd}}/{{model}}/status (if status sent by device)
