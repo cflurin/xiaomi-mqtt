@@ -121,19 +121,19 @@ server.on('message', function(buffer, rinfo) {
       mqtt.publish(payload); 
       break;
     case "heartbeat":
-    if (hb_count > 1) {
-        hb_count = hb_count - 1;
-        //log.info("heartbeat not published, "+hb_count+" before next publish");
-      } else {
-        hb_count = heartbeatfreq;
-        var data = JSON.parse(msg.data);
-        if (msg.model === "gateway") {
-            token[msg.sid] = msg.token;
+      var data = JSON.parse(msg.data);
+      if (msg.model === "gateway") {
+        token[msg.sid] = msg.token;
+        if (hb_count > 1) {
+          hb_count = hb_count - 1;
+          //log.info("heartbeat not published, "+hb_count+" before next publish");
+        } else {
+          // reset counter, if this is done, it's time to publish this one
+          hb_count = heartbeatfreq;
         }
-        payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "token":msg.token, "data": data};
-        if (msg.model !== "gateway") {
-          log.debug(JSON.stringify(payload));
-        }
+      }
+      payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "token":msg.token, "data": data};
+      if (msg.model !== "gateway" || hb_count===heartbeatfreq ) {
         mqtt.publish(payload);
       }
       break;
