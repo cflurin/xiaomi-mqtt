@@ -54,11 +54,23 @@ Edit `~/xiaomi-mqtt/config.json` to fit your requirements:
     "url": "mqtt://127.0.0.1",
     "port": 1883,
     "username": "foo",
-    "password": "bar"
+    "password": "bar",
+    "topic_mode": "full",    
   },
-  "loglevel": "info"
+  "loglevel": "info",
+  "heartbeatfreq": 6,
 }
 ```
+
+```sh
+"topic_mode": <"short"> | <"full"> | <"both">
+```
+
+Under what topic message are sent, 
+
+- `short` mean legacy default (the only one available available until this option)
+- `full` new topic mode that allow you to do some topic filtering directly on client side, the format is described on topic below
+- `both` 2 topics are sent, the legacy `from` and the new `full` 
 
 ```sh
 "loglevel": <"debug"> | <"info"> | <"warn"> | <"error">
@@ -66,6 +78,7 @@ Edit `~/xiaomi-mqtt/config.json` to fit your requirements:
 
 Replace `127.0.0.1` with the address of your mqtt broker.
 
+By default the gateway send heartbeat every 10s which can do some pollution when testing/debug, the new counter parameter in config named `heartbeatfreq` avoid this, in the example above set to 6 means only send a MQTT message each 6 heartbeat, so each 60s. Note this apply only to gateway heartbeat not the device's one.
 
 ### Usage (global installation)
 
@@ -82,12 +95,126 @@ Use `ctrl c` to stop xiaomi-mqtt.
 #
 # mqtt API
 
-The data (payload) is sent/received in a JSON format using following topics:
+If the configuration option `topic_mode` is set to `short` or `both`, the data (payload) is sent/received in a JSON format using following topics:
 
 * xiaomi/from
 * xiaomi/to/read
 * xiaomi/to/write
 * xiaomi/to/get_id_list
+
+**Benefit of full topic option**
+
+If the configuration option `topic_mode` is set to `full` or `both`, only the topic `/from` change, the data (payload) is sent/received in a JSON format using following topics:
+
+* xiaomi/from/{{sid}}/{{cmd}}/{{model}}
+* xiaomi/from/{{sid}}/{{cmd}}/{{model}}/status (if status sent by device)
+
+with `sid`, `cmd`, `model`, replaced by the ones sent by the device. I let the payload untouched to be sure all information will be there.
+
+So for example you can have a new topic like 
+
+```sh
+topic: xiaomi/from/158d0003102db5/report/cube
+payload:
+{
+  "cmd":"report",
+  "model":"cube",
+  "sid":"158d0003102db5",
+  "short_id":46605,
+  "data":{"status":"move"}
+}
+```
+
+if the device return a status, the topic is extended by status allowing for example to get only status change messages. May be can just use report and this option is not usefull, I don't know
+```sh
+topic: xiaomi/from/158d0003102db5/report/cube/status
+payload:
+{
+  "cmd":"report",
+  "model":"cube",
+  "sid":"158d0003102db5",
+  "short_id":46605,
+  "data":{"status":"flip90"}
+}
+```
+
+What does this means? You can do subscribtion filtering, I strongly suggest you to read the official [documentation](https://mosquitto.org/man/mqtt-7.html) on this point.
+
+**subscribe to a specific device**
+
+```sh
+topic: xiaomi/from/158d0003102db5/#
+payload:
+{
+  "cmd":"report",
+  "model":"cube",
+  "sid":"158d0003102db5",
+  "short_id":46605,
+  "data":{"status":"move"}
+}
+```
+
+**subscribe to all devices report event**
+
+```sh
+topic: xiaomi/from/+/report/#
+payload:
+{
+  "cmd": "report",
+  "model": "magnet",
+  "sid": "158d0001f3651f",
+  "short_id": 57029,
+  "data": {
+    "status": "close"
+  }
+}
+```
+
+**subscribe to temperature humidity devices only**
+
+```sh
+topic: xiaomi/from/+/+/sensor_ht/#
+payload:
+{
+  "cmd":"report",
+  "model":"sensor_ht",
+  "sid":"158d0001a2eb66",
+  "short_id":30124,
+  "data":{"voltage":3005,"temperature":16.7,"humidity":40.5}
+}
+```
+
+**subscribe to all cube status event**
+
+```sh
+topic: xiaomi/from/+/+/cube/status
+payload:
+{
+  "cmd":"report",
+  "model":"cube",
+  "sid":"158d0003102db5",
+  "short_id":46605,
+  "data":{"status":"move"}
+}
+```
+
+
+
+
+**subscribe to all devices status event**
+
+```sh
+topic: xiaomi/from/+/+/+/status
+payload:
+{
+  "cmd":"report",
+  "model":"cube",
+  "sid":"158d0003102db5",
+  "short_id":46605,
+  "data":{"status":"move"}
+}
+```
+
 
 ## Howto examples
 
