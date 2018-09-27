@@ -66,9 +66,9 @@ Edit `~/xiaomi-mqtt/config.json` to fit your requirements:
 "topic_mode": <"short"> | <"full"> | <"both">
 ```
 
-- `short` mean legacy default
+- `short` default
 - `full` allow you to do some topic filtering directly on client side.
-- `both` 2 topics are sent, the legacy `short` and  `full`.
+- `both` 2 topics are sent,  `short` and  `full`.
 
 ```sh
 "loglevel": <"debug"> | <"info"> | <"warn"> | <"error">
