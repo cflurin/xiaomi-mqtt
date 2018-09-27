@@ -124,7 +124,7 @@ server.on('message', function(buffer, rinfo) {
       var data = JSON.parse(msg.data);
       if (msg.model === "gateway") {
         token[msg.sid] = msg.token;
-        if (hb_count > 1) {
+        if (hb_count > 0) {
           hb_count = hb_count - 1;
           //log.info("heartbeat not published, "+hb_count+" before next publish");
         } else {
