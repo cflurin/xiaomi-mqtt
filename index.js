@@ -24,7 +24,7 @@ var multicastPort =  config.xiaomi.multicastPort || 4321;
 var password = config.xiaomi.password || "";
 var level = config.loglevel || "info";
 var heartbeatfreq = config.heartbeatfreq || 1;
-var dataFormat = config.dataFormat || "processed"
+var dataFormat = config.dataFormat || "parsed"
 global.hb_count = heartbeatfreq;
 
 Utils.setlogPrefix(log);
