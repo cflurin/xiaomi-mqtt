@@ -55,10 +55,12 @@ Edit `~/xiaomi-mqtt/config.json` to fit your requirements:
     "port": 1883,
     "username": "foo",
     "password": "bar",
-    "topic_mode": "short"   
+    "topic_mode": "short",
+    "topic_prefix": "xiaomi"
   },
   "loglevel": "info",
-  "heartbeatfreq": 6
+  "heartbeatfreq": 6,
+  "dataFormat": "parsed"
 }
 ```
 
@@ -75,6 +77,8 @@ Edit `~/xiaomi-mqtt/config.json` to fit your requirements:
 ```
 
 Replace `127.0.0.1` with the address of your mqtt broker.
+
+Set `dataFormat` to `raw` to get data without parsing.
 
 By default the gateway send heartbeat every 10s which can do some pollution when testing/debug, the counter parameter in config named `heartbeatfreq` avoid this, in the example above set to 6 means only send a MQTT message each 6 heartbeat, so each 60s. Note this apply only to gateway heartbeat not the device's one.
 
@@ -118,7 +122,7 @@ and
 
 ```sh
 topic: xiaomi/from
-payload: 
+payload:
 {
   "cmd":"get_id_list_ack",
   "sid":"fff...",
@@ -207,7 +211,7 @@ payload:
 ```sh
 "data": {"voltage":3005,"temperature":16.7,"humidity":null}
 or
-"data": {"voltage":3005,"temperature":null,"humidity":51.7} 
+"data": {"voltage":3005,"temperature":null,"humidity":51.7}
 ```
 
 **magnet**
@@ -356,7 +360,7 @@ payload:
 
 ```sh
 topic: xiaomi/to/write
-payload: 
+payload:
 {
   "cmd": "write",
   "model": "gateway",
