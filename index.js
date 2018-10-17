@@ -93,7 +93,7 @@ server.on('message', function(buffer, rinfo) {
     case "read_ack":
     case "report":
       var data = JSON.parse(msg.data);
-      if (dataFormat == "raw") {
+      if (dataFormat === "raw") {
         payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
         log.debug("untested "+JSON.stringify(payload));
       } else {
