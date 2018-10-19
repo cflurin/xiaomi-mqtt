@@ -93,30 +93,34 @@ server.on('message', function(buffer, rinfo) {
     case "read_ack":
     case "report":
       var data = JSON.parse(msg.data);
-      if (dataFormat === "raw") {
-        payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
-        log.debug("untested "+JSON.stringify(payload));
-      } else {
-        switch (msg.model) {
-          case "sensor_ht":
+      switch (msg.model) {
+        case "sensor_ht":
+          if (dataFormat === "parsed") {
             var temperature = data.temperature ? Math.round(data.temperature / 10.0) / 10 : null;
             var humidity = data.humidity ? Math.round(data.humidity / 10.0) / 10: null;
-            payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": {"voltage": data.voltage, "temperature":temperature, "humidity":humidity}};
-            log.debug(JSON.stringify(payload));
-            break;
-          case "gateway":
-          case "sensor_motion.aq2":
-          case "magnet":
-          case "switch":
-          case "86sw2":
-          case "cube":
-            payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
-            log.debug(JSON.stringify(payload));
-            break;
-          default:
-            payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
-            log.debug("untested "+JSON.stringify(payload));
-        }
+            data = {"voltage": data.voltage, "temperature":temperature, "humidity":humidity};
+          }
+          payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
+          log.debug(JSON.stringify(payload));
+          break;
+        case "gateway":
+        case "motion":
+        case "sensor_motion.aq2":
+        case "sensor_wleak.aq1":
+        case "magnet":
+        case "switch":
+        case "86sw1":
+        case "86sw2":
+        case "cube":
+        case "ctrl_neutral1":
+        case "ctrl_neutral2":
+        case "ctrl_ln1.aq1":
+          payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
+          log.debug(JSON.stringify(payload));
+          break;
+        default:
+          payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
+          log.debug("untested "+JSON.stringify(payload));
       }
       mqtt.publish(payload);
       break;

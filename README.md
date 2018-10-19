@@ -410,11 +410,17 @@ payload:
 
 * gateway
 * sensor_ht
+* motion
 * sensor_motion.aq2
+* sensor_wleak.aq1
 * magnet
 * switch
+* 86sw1
 * 86sw2
 * cube
+* ctrl_neutral1
+* ctrl_neutral2
+* ctrl_ln1.aq1
 
 **Note:** Untested devices using the same format will also send a payload.
 
