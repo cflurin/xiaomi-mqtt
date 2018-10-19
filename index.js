@@ -96,9 +96,8 @@ server.on('message', function(buffer, rinfo) {
       switch (msg.model) {
         case "sensor_ht":
           if (dataFormat === "parsed") {
-            var temperature = data.temperature ? Math.round(data.temperature / 10.0) / 10 : null;
-            var humidity = data.humidity ? Math.round(data.humidity / 10.0) / 10: null;
-            data = {"voltage": data.voltage, "temperature":temperature, "humidity":humidity};
+            data.temperature = data.temperature ? Math.round(data.temperature / 10.0) / 10 : null;
+            data.humidity = data.humidity ? Math.round(data.humidity / 10.0) / 10: null;
           }
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           log.debug(JSON.stringify(payload));
