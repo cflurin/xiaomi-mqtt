@@ -12,5 +12,9 @@
     "password": "bar",
     "topic_mode": "short"
   },
+  "rooms": {
+    "158d000xxxxxxx": "Living Room",
+    "158d000xxxxxxx": "Bedroom" 
+  },
   "loglevel": "info"
 }
