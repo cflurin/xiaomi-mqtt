@@ -58,6 +58,10 @@ Edit `~/xiaomi-mqtt/config.json` to fit your requirements:
     "topic_mode": "short",
     "topic_prefix": "xiaomi"
   },
+  "rooms": {
+    "158d0001f35b90": "Living Room",
+    "158d00022758ac": "Bedroom" 
+  },
   "loglevel": "info",
   "heartbeatfreq": 6,
   "dataFormat": "parsed"
@@ -81,6 +85,18 @@ Replace `127.0.0.1` with the address of your mqtt broker.
 Set `dataFormat` to `raw` to get data without parsing.
 
 By default the gateway send heartbeat every 10s which can do some pollution when testing/debug, the counter parameter in config named `heartbeatfreq` avoid this, in the example above set to 6 means only send a MQTT message each 6 heartbeat, so each 60s. Note this apply only to gateway heartbeat not the device's one.
+
+If you have configured rooms section in the config file, then, if the SID of received message match, then the room name will be added to the data field in the payload as the example below:
+
+```sh
+{
+  "cmd":"report",
+  "model":"switch",
+  "sid":"158d0001f35b90",
+  "short_id":46517,
+  "data":{"status":"click", "room": "Living Room"}
+}
+```
 
 ### Usage (global installation)
 
