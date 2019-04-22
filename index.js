@@ -98,9 +98,11 @@ server.on('message', function(buffer, rinfo) {
       if (rooms !== null) data.room = rooms[msg.sid]
       switch (msg.model) {
         case "sensor_ht":
+        case "weather.v1":
           if (dataFormat === "parsed") {
-            data.temperature = data.temperature ? data.temperature / 100 : null;
-            data.humidity = data.humidity ? data.humidity / 100: null;
+            if (data.temperature !== undefined && data.temperature)  data.temperature = Number(data.temperature) / 100 ;
+            if (data.humidity !== undefined && data.humidity) data.humidity = Number(data.humidity) / 100;
+            if (data.pressure !== undefined && data.pressure) data.pressure = Number(data.pressure) / 100;
           }
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           log.debug(JSON.stringify(payload));
