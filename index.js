@@ -102,6 +102,14 @@ server.on('message', function(buffer, rinfo) {
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           log.debug(JSON.stringify(payload));
           break;
+        case "weather.v1":
+          if (dataFormat === "parsed") {
+            data.temperature = data.temperature ? data.temperature / 100 : null;
+            data.humidity = data.humidity ? data.humidity / 100: null;
+          }
+          payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
+          log.debug(JSON.stringify(payload));
+          break;
         case "gateway":
         case "motion":
         case "sensor_motion.aq2":
