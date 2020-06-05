@@ -421,6 +421,7 @@ payload:
 * ctrl_neutral1
 * ctrl_neutral2
 * ctrl_ln1.aq1
+* smoke
 
 **Note:** Untested devices using the same format will also send a payload.
 

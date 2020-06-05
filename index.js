@@ -114,6 +114,7 @@ server.on('message', function(buffer, rinfo) {
         case "ctrl_neutral1":
         case "ctrl_neutral2":
         case "ctrl_ln1.aq1":
+        case "smoke":
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           log.debug(JSON.stringify(payload));
           break;
