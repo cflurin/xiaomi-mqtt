@@ -25,6 +25,7 @@ var password = config.xiaomi.password || "";
 var level = config.loglevel || "info";
 var heartbeatfreq = config.heartbeatfreq || 1;
 var dataFormat = config.dataFormat || "parsed"
+var rooms = config.rooms || null
 global.hb_count = heartbeatfreq;
 
 Utils.setlogPrefix(log);
@@ -79,6 +80,7 @@ server.on('message', function(buffer, rinfo) {
       break;
     case "get_id_list_ack":
       var data = JSON.parse(msg.data);
+      if (rooms !== null) data.room = rooms[msg.sid]
       var sid;
       for(var index in data) {
         sid = data[index];
@@ -93,11 +95,14 @@ server.on('message', function(buffer, rinfo) {
     case "read_ack":
     case "report":
       var data = JSON.parse(msg.data);
+      if (rooms !== null) data.room = rooms[msg.sid]
       switch (msg.model) {
         case "sensor_ht":
+        case "weather.v1":
           if (dataFormat === "parsed") {
-            data.temperature = data.temperature ? data.temperature / 100 : null;
-            data.humidity = data.humidity ? data.humidity / 100: null;
+            if (data.temperature !== undefined && data.temperature)  data.temperature = Number(data.temperature) / 100 ;
+            if (data.humidity !== undefined && data.humidity) data.humidity = Number(data.humidity) / 100;
+            if (data.pressure !== undefined && data.pressure) data.pressure = Number(data.pressure) / 100;
           }
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           log.debug(JSON.stringify(payload));
@@ -126,12 +131,14 @@ server.on('message', function(buffer, rinfo) {
       break;
     case "write_ack":
       var data = JSON.parse(msg.data);
+      if (rooms !== null) data.room = rooms[msg.sid]
       payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
       log.debug(JSON.stringify(payload));
       mqtt.publish(payload);
       break;
     case "heartbeat":
       var data = JSON.parse(msg.data);
+      if (rooms !== null) data.room = rooms[msg.sid]
       if (msg.model === "gateway") {
         token[msg.sid] = msg.token;
         if (hb_count > 0) {
